@@ -1,7 +1,10 @@
-# ヨゾラ — 今夜の星空ナビ
+# Yozora — 今夜の星空ナビ / Tonight's Stargazing Guide
 
 「**今夜、星は見える？**」に3秒で答えるWebアプリ。
 場所を選ぶ（または現在地）だけで、今夜の観測条件と見どころを1画面に集約します。
+日本語 / English 切替対応。
+
+*Answers "Will the stars be out tonight?" in three seconds — stargazing index, planets, moon, ISS passes and meteor showers for your location, fully client-side.*
 
 ## 機能
 

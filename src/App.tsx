@@ -13,6 +13,7 @@ import { fetchWeather, weatherAt, type HourWeather } from './lib/weather'
 import { fetchIssTle, findVisiblePasses, type TLE } from './lib/iss'
 import { activeShowers, nextPeak } from './lib/meteors'
 import { CITIES, type City } from './lib/geo'
+import { detectLang, saveLang, t, type Lang } from './lib/i18n'
 import { LocationPicker } from './components/LocationPicker'
 import { ScoreCard } from './components/ScoreCard'
 import { HourlyChart, type HourScore } from './components/HourlyChart'
@@ -27,8 +28,12 @@ function loadLocation(): City {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
-      const c = JSON.parse(raw) as City
-      if (typeof c.lat === 'number' && typeof c.lon === 'number' && c.name) return c
+      const c = JSON.parse(raw) as Partial<City>
+      if (typeof c.lat === 'number' && typeof c.lon === 'number' && c.name) {
+        const preset = CITIES.find((p) => p.name === c.name)
+        if (preset) return preset
+        return { name: '現在地', en: 'Current location', lat: c.lat, lon: c.lon }
+      }
     }
   } catch {
     /* fall through */
@@ -37,6 +42,7 @@ function loadLocation(): City {
 }
 
 export default function App() {
+  const [lang, setLang] = useState<Lang>(detectLang)
   const [location, setLocation] = useState<City>(loadLocation)
   const [weather, setWeather] = useState<HourWeather[] | null>(null)
   const [weatherError, setWeatherError] = useState(false)
@@ -46,6 +52,12 @@ export default function App() {
   const now = useMemo(() => new Date(), [])
   const hours = useMemo(() => tonightHours(now), [now])
   const { lat, lon } = location
+
+  useEffect(() => {
+    saveLang(lang)
+    document.documentElement.lang = lang
+    document.title = t(lang, 'app.title')
+  }, [lang])
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(location))
@@ -121,17 +133,35 @@ export default function App() {
 
   return (
     <div className="app">
-      <div className="stars" aria-hidden="true" />
       <header className="header">
-        <div>
-          <h1 className="title">ヨゾラ</h1>
-          <p className="subtitle">今夜、星は見える？</p>
+        <div className="brand">
+          <h1 className="title">Yozora</h1>
+          <p className="subtitle">{t(lang, 'tagline')}</p>
         </div>
-        <LocationPicker location={location} onChange={setLocation} />
+        <div className="header-controls">
+          <div className="lang-toggle" role="group" aria-label="Language">
+            <button
+              className={`lang-button ${lang === 'ja' ? 'lang-active' : ''}`}
+              onClick={() => setLang('ja')}
+              aria-pressed={lang === 'ja'}
+            >
+              日本語
+            </button>
+            <button
+              className={`lang-button ${lang === 'en' ? 'lang-active' : ''}`}
+              onClick={() => setLang('en')}
+              aria-pressed={lang === 'en'}
+            >
+              EN
+            </button>
+          </div>
+          <LocationPicker lang={lang} location={location} onChange={setLocation} />
+        </div>
       </header>
 
       <main className="grid">
         <ScoreCard
+          lang={lang}
           verdict={overallVerdict}
           score={best?.score ?? null}
           bestTime={best?.time ?? null}
@@ -141,18 +171,16 @@ export default function App() {
           loading={!weather && !weatherError}
           error={weatherError}
         />
-        <HourlyChart hours={hourScores} />
-        <MoonCard moon={moon} />
-        <PlanetsCard planets={planets} />
-        <MeteorCard showers={showers} upcoming={upcoming} date={hours[0]} />
-        <IssCard passes={passes} loading={!tle && !tleError} error={tleError} />
+        <HourlyChart lang={lang} hours={hourScores} />
+        <MoonCard lang={lang} moon={moon} />
+        <PlanetsCard lang={lang} planets={planets} />
+        <MeteorCard lang={lang} showers={showers} upcoming={upcoming} />
+        <IssCard lang={lang} passes={passes} loading={!tle && !tleError} error={tleError} />
       </main>
 
       <footer className="footer">
-        <p>
-          計算: astronomy-engine / satellite.js ・ 天気: Open-Meteo ・ TLE: WhereTheISS.at
-        </p>
-        <p>予報は目安です。標高・光害・地形により実際の見え方は変わります。</p>
+        <p>{t(lang, 'footer.credits')}</p>
+        <p>{t(lang, 'footer.disclaimer')}</p>
       </footer>
     </div>
   )

@@ -1,39 +1,42 @@
 import type { IssPass } from '../lib/iss'
 import { azimuthToCompass } from '../lib/geo'
 import { fmtDateShort, fmtTime } from '../lib/format'
+import { t, type Lang } from '../lib/i18n'
 
 interface Props {
+  lang: Lang
   passes: IssPass[] | null
   loading: boolean
   error: boolean
 }
 
-export function IssCard({ passes, loading, error }: Props) {
+export function IssCard({ lang, passes, loading, error }: Props) {
   return (
-    <section className="card iss-card" aria-label="ISS国際宇宙ステーションの通過予報">
-      <div className="card-label">ISS（国際宇宙ステーション）通過予報 — 今後3日</div>
-      {loading && <div className="score-loading">軌道データ取得中…</div>}
-      {error && <div className="score-loading">軌道データを取得できませんでした</div>}
-      {passes && passes.length === 0 && (
-        <div className="score-loading">今後3日間、この場所からの好条件の通過はありません</div>
-      )}
+    <section className="card iss-card" aria-label={t(lang, 'iss.title')}>
+      <div className="card-label">{t(lang, 'iss.title')}</div>
+      {loading && <div className="score-loading">{t(lang, 'iss.loading')}</div>}
+      {error && <div className="score-loading">{t(lang, 'iss.error')}</div>}
+      {passes && passes.length === 0 && <div className="score-loading">{t(lang, 'iss.none')}</div>}
       {passes && passes.length > 0 && (
         <ul className="iss-list">
           {passes.map((p) => (
             <li key={p.start.getTime()} className="iss-row">
               <div className="iss-when">
-                <strong>{fmtDateShort(p.peak)}</strong> {fmtTime(p.start)}〜{fmtTime(p.end)}
+                <strong>{fmtDateShort(p.peak, lang)}</strong> {fmtTime(p.start)}〜{fmtTime(p.end)}
               </div>
               <div className="iss-path">
-                {azimuthToCompass(p.startAzimuthDeg)}から現れ、
-                {azimuthToCompass(p.peakAzimuthDeg)}の空 最大高度
-                {Math.round(p.maxElevationDeg)}° を通過 →{azimuthToCompass(p.endAzimuthDeg)}へ
+                {t(lang, 'iss.path', {
+                  from: azimuthToCompass(p.startAzimuthDeg, lang),
+                  peak: azimuthToCompass(p.peakAzimuthDeg, lang),
+                  alt: Math.round(p.maxElevationDeg),
+                  to: azimuthToCompass(p.endAzimuthDeg, lang),
+                })}
               </div>
             </li>
           ))}
         </ul>
       )}
-      <div className="hourly-note">飛行機より速い明るい光点がスーッと横切ります。肉眼でOK</div>
+      <div className="hourly-note">{t(lang, 'iss.note')}</div>
     </section>
   )
 }

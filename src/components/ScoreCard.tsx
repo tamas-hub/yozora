@@ -1,7 +1,9 @@
 import type { Verdict } from '../lib/score'
 import { fmtDateShort, fmtTime } from '../lib/format'
+import { t, type Lang } from '../lib/i18n'
 
 interface Props {
+  lang: Lang
   verdict: Verdict | null
   score: number | null
   bestTime: Date | null
@@ -12,38 +14,37 @@ interface Props {
   error: boolean
 }
 
-export function ScoreCard({ verdict, score, bestTime, sunset, sunrise, date, loading, error }: Props) {
+export function ScoreCard({ lang, verdict, score, bestTime, sunset, sunrise, date, loading, error }: Props) {
   return (
-    <section className="card score-card" aria-label="今夜の星空指数">
-      <div className="card-label">{fmtDateShort(date)} の星空指数</div>
-      {loading && <div className="score-loading">天気を確認中…</div>}
-      {error && (
-        <div className="score-loading">
-          天気データを取得できませんでした。
-          <br />
-          通信環境を確認して再読み込みしてください。
-        </div>
-      )}
+    <section className="card score-card" aria-label={t(lang, 'score.title', { date: fmtDateShort(date, lang) })}>
+      <div className="card-label">{t(lang, 'score.title', { date: fmtDateShort(date, lang) })}</div>
+      {loading && <div className="score-loading">{t(lang, 'score.loading')}</div>}
+      {error && <div className="score-loading">{t(lang, 'score.error')}</div>}
       {verdict && score !== null && (
         <>
           <div className="score-main">
             <div className={`score-number rank-${verdict.rank}`}>
               {score}
-              <span className="score-unit">点</span>
+              <span className="score-unit">{t(lang, 'score.unit')}</span>
             </div>
             <div className="score-text">
-              <div className={`score-verdict rank-${verdict.rank}`}>{verdict.label}</div>
-              <div className="score-advice">{verdict.advice}</div>
+              <div className={`score-verdict rank-${verdict.rank}`}>{t(lang, `verdict.${verdict.rank}`)}</div>
+              <div className="score-advice">{t(lang, `advice.${verdict.rank}`)}</div>
             </div>
           </div>
           <div className="score-meta">
             {bestTime && (
               <span>
-                ベスト時間帯 <strong>{fmtTime(bestTime)}頃</strong>
+                {t(lang, 'score.best')}{' '}
+                <strong>{t(lang, 'score.bestValue', { time: fmtTime(bestTime) })}</strong>
               </span>
             )}
-            <span>日の入 {fmtTime(sunset)}</span>
-            <span>日の出 {fmtTime(sunrise)}</span>
+            <span>
+              {t(lang, 'score.sunset')} {fmtTime(sunset)}
+            </span>
+            <span>
+              {t(lang, 'score.sunrise')} {fmtTime(sunrise)}
+            </span>
           </div>
         </>
       )}

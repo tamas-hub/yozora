@@ -1,15 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { moonInfo, moonPhaseName, sunAltitude, tonightHours } from '../astro'
+import { moonInfo, moonPhaseKey, sunAltitude, tonightHours } from '../astro'
 
 const TOKYO = { lat: 35.69, lon: 139.692 }
 
-describe('moonPhaseName', () => {
-  it('位相角→名称', () => {
-    expect(moonPhaseName(0)).toBe('新月')
-    expect(moonPhaseName(90)).toBe('上弦の月')
-    expect(moonPhaseName(180)).toBe('満月')
-    expect(moonPhaseName(270)).toBe('下弦の月')
-    expect(moonPhaseName(350)).toBe('新月')
+describe('moonPhaseKey', () => {
+  it('位相角→フェーズキー', () => {
+    expect(moonPhaseKey(0)).toBe('new')
+    expect(moonPhaseKey(45)).toBe('waxingCrescent')
+    expect(moonPhaseKey(90)).toBe('firstQuarter')
+    expect(moonPhaseKey(135)).toBe('waxingGibbous')
+    expect(moonPhaseKey(180)).toBe('full')
+    expect(moonPhaseKey(225)).toBe('waningGibbous')
+    expect(moonPhaseKey(270)).toBe('lastQuarter')
+    expect(moonPhaseKey(315)).toBe('waningCrescent')
+    expect(moonPhaseKey(350)).toBe('new')
   })
 })
 
@@ -27,7 +31,7 @@ describe('moonInfo', () => {
     expect(m.illumination).toBeLessThanOrEqual(1)
     expect(m.age).toBeGreaterThanOrEqual(0)
     expect(m.age).toBeLessThan(29.6)
-    expect(m.phaseName).toBeTruthy()
+    expect(m.phaseKey).toBeTruthy()
   })
 })
 

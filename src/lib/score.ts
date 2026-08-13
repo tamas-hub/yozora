@@ -30,20 +30,14 @@ export function computeScore(input: ScoreInput): number {
 }
 
 export interface Verdict {
-  label: string
-  advice: string
-  /** UI用ランク 0(最悪)-4(最高) */
+  /** ランク 0(最悪)-4(最高)。表示文言は i18n の verdict.{rank} / advice.{rank} */
   rank: 0 | 1 | 2 | 3 | 4
 }
 
 export function verdict(score: number): Verdict {
-  if (score >= 80)
-    return { label: '絶好の星空日和', advice: '迷わず外へ。天の川が見えるチャンスです', rank: 4 }
-  if (score >= 60)
-    return { label: '良好', advice: '明るい星や惑星はしっかり見えます', rank: 3 }
-  if (score >= 40)
-    return { label: 'まずまず', advice: '雲の切れ間や月明かり次第。粘れば見えます', rank: 2 }
-  if (score >= 20)
-    return { label: '厳しめ', advice: '今夜は条件がよくありません。明日に期待', rank: 1 }
-  return { label: '今夜は絶望的', advice: '空を見るより布団の中がおすすめです', rank: 0 }
+  if (score >= 80) return { rank: 4 }
+  if (score >= 60) return { rank: 3 }
+  if (score >= 40) return { rank: 2 }
+  if (score >= 20) return { rank: 1 }
+  return { rank: 0 }
 }

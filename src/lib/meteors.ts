@@ -2,26 +2,29 @@
 
 export interface MeteorShower {
   name: string
+  /** 英語名 */
+  en: string
   /** 活動期間 [月, 日]（両端含む） */
   start: [number, number]
   end: [number, number]
   peak: [number, number]
   /** 極大時の1時間あたり出現数（理想条件） */
   zhr: number
-  radiantDirection: string
+  /** 放射点の方位（16方位インデックス、geo.COMPASS_16準拠） */
+  radiantIdx: number
 }
 
 export const SHOWERS: MeteorShower[] = [
-  { name: 'しぶんぎ座流星群', start: [12, 28], end: [1, 12], peak: [1, 4], zhr: 110, radiantDirection: '北東' },
-  { name: 'こと座流星群', start: [4, 16], end: [4, 25], peak: [4, 22], zhr: 18, radiantDirection: '東' },
-  { name: 'みずがめ座η流星群', start: [4, 19], end: [5, 28], peak: [5, 6], zhr: 50, radiantDirection: '東' },
-  { name: 'みずがめ座δ南流星群', start: [7, 12], end: [8, 23], peak: [7, 30], zhr: 25, radiantDirection: '南' },
-  { name: 'ペルセウス座流星群', start: [7, 17], end: [8, 24], peak: [8, 13], zhr: 100, radiantDirection: '北東' },
-  { name: 'オリオン座流星群', start: [10, 2], end: [11, 7], peak: [10, 21], zhr: 20, radiantDirection: '南東' },
-  { name: 'おうし座流星群', start: [10, 20], end: [12, 10], peak: [11, 12], zhr: 5, radiantDirection: '南' },
-  { name: 'しし座流星群', start: [11, 6], end: [11, 30], peak: [11, 17], zhr: 15, radiantDirection: '東' },
-  { name: 'ふたご座流星群', start: [12, 4], end: [12, 20], peak: [12, 14], zhr: 150, radiantDirection: '東' },
-  { name: 'こぐま座流星群', start: [12, 17], end: [12, 26], peak: [12, 22], zhr: 10, radiantDirection: '北' },
+  { name: 'しぶんぎ座流星群', en: 'Quadrantids', start: [12, 28], end: [1, 12], peak: [1, 4], zhr: 110, radiantIdx: 2 },
+  { name: 'こと座流星群', en: 'Lyrids', start: [4, 16], end: [4, 25], peak: [4, 22], zhr: 18, radiantIdx: 4 },
+  { name: 'みずがめ座η流星群', en: 'Eta Aquariids', start: [4, 19], end: [5, 28], peak: [5, 6], zhr: 50, radiantIdx: 4 },
+  { name: 'みずがめ座δ南流星群', en: 'Southern Delta Aquariids', start: [7, 12], end: [8, 23], peak: [7, 30], zhr: 25, radiantIdx: 8 },
+  { name: 'ペルセウス座流星群', en: 'Perseids', start: [7, 17], end: [8, 24], peak: [8, 13], zhr: 100, radiantIdx: 2 },
+  { name: 'オリオン座流星群', en: 'Orionids', start: [10, 2], end: [11, 7], peak: [10, 21], zhr: 20, radiantIdx: 6 },
+  { name: 'おうし座流星群', en: 'Taurids', start: [10, 20], end: [12, 10], peak: [11, 12], zhr: 5, radiantIdx: 8 },
+  { name: 'しし座流星群', en: 'Leonids', start: [11, 6], end: [11, 30], peak: [11, 17], zhr: 15, radiantIdx: 4 },
+  { name: 'ふたご座流星群', en: 'Geminids', start: [12, 4], end: [12, 20], peak: [12, 14], zhr: 150, radiantIdx: 4 },
+  { name: 'こぐま座流星群', en: 'Ursids', start: [12, 17], end: [12, 26], peak: [12, 22], zhr: 10, radiantIdx: 0 },
 ]
 
 /** [月,日] を比較用の数値へ */

@@ -45,27 +45,37 @@ export function searchRiseSet(
 
 // ---- 月 ----
 
+export type MoonPhaseKey =
+  | 'new'
+  | 'waxingCrescent'
+  | 'firstQuarter'
+  | 'waxingGibbous'
+  | 'full'
+  | 'waningGibbous'
+  | 'lastQuarter'
+  | 'waningCrescent'
+
 export interface MoonInfo {
   /** 月齢（日） */
   age: number
   /** 輝面比 0-1 */
   illumination: number
-  phaseName: string
+  phaseKey: MoonPhaseKey
   /** 位相角 0-360（0=新月, 180=満月） */
   phaseAngle: number
   rise: Date | null
   set: Date | null
 }
 
-export function moonPhaseName(angle: number): string {
-  if (angle < 22.5 || angle >= 337.5) return '新月'
-  if (angle < 67.5) return '三日月'
-  if (angle < 112.5) return '上弦の月'
-  if (angle < 157.5) return '十三夜月'
-  if (angle < 202.5) return '満月'
-  if (angle < 247.5) return '寝待月'
-  if (angle < 292.5) return '下弦の月'
-  return '有明月'
+export function moonPhaseKey(angle: number): MoonPhaseKey {
+  if (angle < 22.5 || angle >= 337.5) return 'new'
+  if (angle < 67.5) return 'waxingCrescent'
+  if (angle < 112.5) return 'firstQuarter'
+  if (angle < 157.5) return 'waxingGibbous'
+  if (angle < 202.5) return 'full'
+  if (angle < 247.5) return 'waningGibbous'
+  if (angle < 292.5) return 'lastQuarter'
+  return 'waningCrescent'
 }
 
 export function moonInfo(date: Date, lat: number, lon: number): MoonInfo {
@@ -77,7 +87,7 @@ export function moonInfo(date: Date, lat: number, lon: number): MoonInfo {
   return {
     age: (phaseAngle / 360) * 29.530588,
     illumination,
-    phaseName: moonPhaseName(phaseAngle),
+    phaseKey: moonPhaseKey(phaseAngle),
     phaseAngle,
     rise: searchRiseSet(Body.Moon, searchStart, lat, lon, 1),
     set: searchRiseSet(Body.Moon, searchStart, lat, lon, -1),
@@ -93,9 +103,11 @@ export function moonForScore(date: Date, lat: number, lon: number): { altDeg: nu
 
 // ---- 惑星 ----
 
+export type PlanetKey = 'mercury' | 'venus' | 'mars' | 'jupiter' | 'saturn'
+
 export interface PlanetTonight {
   body: Body
-  nameJa: string
+  key: PlanetKey
   magnitude: number
   /** 暗夜時間帯に高度10°を超える時間があるか */
   visible: boolean
@@ -105,12 +117,12 @@ export interface PlanetTonight {
   bestAzimuth: number
 }
 
-const PLANETS: { body: Body; nameJa: string }[] = [
-  { body: Body.Mercury, nameJa: '水星' },
-  { body: Body.Venus, nameJa: '金星' },
-  { body: Body.Mars, nameJa: '火星' },
-  { body: Body.Jupiter, nameJa: '木星' },
-  { body: Body.Saturn, nameJa: '土星' },
+const PLANETS: { body: Body; key: PlanetKey }[] = [
+  { body: Body.Mercury, key: 'mercury' },
+  { body: Body.Venus, key: 'venus' },
+  { body: Body.Mars, key: 'mars' },
+  { body: Body.Jupiter, key: 'jupiter' },
+  { body: Body.Saturn, key: 'saturn' },
 ]
 
 /**
@@ -131,7 +143,7 @@ export function planetsTonight(
   }
   const darkSamples = samples.filter((d) => sunAltitude(d, lat, lon) < -6)
 
-  return PLANETS.map(({ body, nameJa }) => {
+  return PLANETS.map(({ body, key }) => {
     let best: { time: Date; alt: number; az: number } | null = null
     for (const d of darkSamples) {
       const pos = bodyPosition(body, d, lat, lon)
@@ -143,7 +155,7 @@ export function planetsTonight(
     const magnitude = Illumination(body, MakeTime(mid)).mag
     return {
       body,
-      nameJa,
+      key,
       magnitude,
       visible: best !== null,
       bestTime: best?.time ?? null,

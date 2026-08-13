@@ -1,5 +1,6 @@
 import type { MoonInfo } from '../lib/astro'
 import { fmtTime } from '../lib/format'
+import { t, type Lang } from '../lib/i18n'
 
 /** 位相角(0=新月,180=満月)から月の満ち欠けSVGパスを生成（北半球視点・右から満ちる） */
 function MoonSvg({ angle }: { angle: number }) {
@@ -12,38 +13,35 @@ function MoonSvg({ angle }: { angle: number }) {
   const litPath = `M50 4 A46 46 0 0 ${outerSweep} 50 96 A${rx.toFixed(2)} 46 0 0 ${termSweep} 50 4`
   return (
     <svg viewBox="0 0 100 100" className="moon-svg" aria-hidden="true">
-      <circle cx="50" cy="50" r="46" fill="#1c2340" stroke="#39415f" strokeWidth="1.5" />
-      <path d={litPath} fill="#f5edd6" />
+      <circle cx="50" cy="50" r="46" className="moon-disc" />
+      <path d={litPath} className="moon-lit" />
     </svg>
   )
 }
 
 interface Props {
+  lang: Lang
   moon: MoonInfo
 }
 
-export function MoonCard({ moon }: Props) {
+export function MoonCard({ lang, moon }: Props) {
   const illumPct = Math.round(moon.illumination * 100)
-  const impact =
-    illumPct >= 70
-      ? '月明かりが強く、淡い星や天の川には不利です'
-      : illumPct >= 30
-        ? '月明かりの影響はそこそこ。月没後が狙い目です'
-        : '月明かりはほぼ気になりません'
+  const impactKey =
+    illumPct >= 70 ? 'moon.impact.strong' : illumPct >= 30 ? 'moon.impact.some' : 'moon.impact.none'
   return (
-    <section className="card moon-card" aria-label="今夜の月">
-      <div className="card-label">今夜の月</div>
+    <section className="card moon-card" aria-label={t(lang, 'moon.title')}>
+      <div className="card-label">{t(lang, 'moon.title')}</div>
       <div className="moon-body">
         <MoonSvg angle={moon.phaseAngle} />
         <div className="moon-info">
-          <div className="moon-phase-name">{moon.phaseName}</div>
+          <div className="moon-phase-name">{t(lang, `phase.${moon.phaseKey}`)}</div>
           <div className="moon-detail">
-            月齢 {moon.age.toFixed(1)} ・ 輝面比 {illumPct}%
+            {t(lang, 'moon.age', { age: moon.age.toFixed(1) })} ・ {t(lang, 'moon.illum', { p: illumPct })}
           </div>
           <div className="moon-detail">
-            月の出 {fmtTime(moon.rise)} ・ 月の入 {fmtTime(moon.set)}
+            {t(lang, 'moon.rise')} {fmtTime(moon.rise)} ・ {t(lang, 'moon.set')} {fmtTime(moon.set)}
           </div>
-          <div className="moon-impact">{impact}</div>
+          <div className="moon-impact">{t(lang, impactKey)}</div>
         </div>
       </div>
     </section>

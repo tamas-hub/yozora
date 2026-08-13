@@ -1,3 +1,5 @@
+import { t, type Lang } from '../lib/i18n'
+
 export interface HourScore {
   time: Date
   cloud: number | null
@@ -5,44 +7,43 @@ export interface HourScore {
   dark: boolean
 }
 
-/** スコア→単一色相（シアン）の明度ステップ。高スコアほど明るい */
+/** スコア→単一色相の明度ステップ。高スコアほど明るい */
 function barColor(score: number): string {
-  if (score >= 80) return '#a5f3fc'
-  if (score >= 60) return '#67e8f9'
-  if (score >= 40) return '#22d3ee'
-  if (score >= 20) return '#0e7490'
-  return '#164e63'
+  if (score >= 80) return 'var(--bar-4)'
+  if (score >= 60) return 'var(--bar-3)'
+  if (score >= 40) return 'var(--bar-2)'
+  if (score >= 20) return 'var(--bar-1)'
+  return 'var(--bar-0)'
 }
 
 interface Props {
+  lang: Lang
   hours: HourScore[]
 }
 
-export function HourlyChart({ hours }: Props) {
+export function HourlyChart({ lang, hours }: Props) {
   const hasData = hours.some((h) => h.score !== null)
   return (
-    <section className="card hourly-card" aria-label="時間別の星空スコア">
-      <div className="card-label">時間別スコア（バーが高いほど好条件）</div>
+    <section className="card hourly-card" aria-label={t(lang, 'hourly.title')}>
+      <div className="card-label">{t(lang, 'hourly.title')}</div>
       {!hasData ? (
-        <div className="score-loading">データ待ち…</div>
+        <div className="score-loading">{t(lang, 'hourly.waiting')}</div>
       ) : (
-        <div className="hourly-chart" role="img" aria-label="18時から翌5時までの時間別星空スコア">
+        <div className="hourly-chart" role="img" aria-label={t(lang, 'hourly.aria')}>
           {hours.map((h) => {
             const score = h.score
-            const label = `${h.time.getHours()}時 ${
-              score === null ? 'データなし' : `スコア${score}点・雲量${h.cloud}%`
-            }${h.dark ? '' : '（まだ明るい）'}`
+            const label =
+              (score === null
+                ? t(lang, 'hourly.tipNoData', { h: h.time.getHours() })
+                : t(lang, 'hourly.tip', { h: h.time.getHours(), s: score, c: h.cloud ?? '?' })) +
+              (h.dark ? '' : t(lang, 'hourly.stillBright'))
             return (
               <div className="hour-col" key={h.time.getTime()} data-tip={label}>
                 <div className="hour-bar-area">
                   {score !== null && (
                     <div
-                      className="hour-bar"
-                      style={{
-                        height: `${Math.max(4, score)}%`,
-                        background: barColor(score),
-                        opacity: h.dark ? 1 : 0.35,
-                      }}
+                      className={`hour-bar ${h.dark ? '' : 'hour-bar-twilight'}`}
+                      style={{ height: `${Math.max(4, score)}%`, background: barColor(score) }}
                     />
                   )}
                 </div>
@@ -52,7 +53,7 @@ export function HourlyChart({ hours }: Props) {
           })}
         </div>
       )}
-      <div className="hourly-note">薄いバーは薄明中（空がまだ明るい時間）</div>
+      <div className="hourly-note">{t(lang, 'hourly.note')}</div>
     </section>
   )
 }

@@ -428,3 +428,27 @@ body {
 .footer p {
   margin: 3px 0;
 }
+
+/* ---- 暫定パッチ（本デザイン適用まで） ---- */
+:root {
+  --bar-4: #a5f3fc;
+  --bar-3: #67e8f9;
+  --bar-2: #22d3ee;
+  --bar-1: #0e7490;
+  --bar-0: #164e63;
+  --planet-mercury: #9ca3af;
+  --planet-venus: #fde68a;
+  --planet-mars: #f87171;
+  --planet-jupiter: #fcd34d;
+  --planet-saturn: #d6c9a3;
+}
+.moon-disc { fill: #1c2340; stroke: #39415f; stroke-width: 1.5; }
+.moon-lit { fill: #f5edd6; }
+.hour-bar-twilight { opacity: 0.35; }
+/* selectのoption可読性: OSネイティブ描画に明示色を与える */
+.city-select { background: #131a36; }
+.city-select option { color: #eef1fb; background: #131a36; }
+.lang-toggle { display: inline-flex; border: 1px solid var(--surface-border); border-radius: 10px; overflow: hidden; }
+.lang-button { background: transparent; color: var(--ink-2); border: 0; padding: 8px 12px; font-size: 13px; cursor: pointer; }
+.lang-active { background: var(--surface); color: var(--ink); font-weight: 600; }
+.header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

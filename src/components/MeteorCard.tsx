@@ -1,43 +1,57 @@
-import type { ActiveShower } from '../lib/meteors'
+import { COMPASS_16, COMPASS_16_EN } from '../lib/geo'
+import type { ActiveShower, MeteorShower } from '../lib/meteors'
 import { fmtDateShort } from '../lib/format'
+import { t, type Lang } from '../lib/i18n'
 
 interface Props {
+  lang: Lang
   showers: ActiveShower[]
-  upcoming: ActiveShower | { shower: ActiveShower['shower']; daysToPeak: number }
-  date: Date
+  upcoming: { shower: MeteorShower; daysToPeak: number }
 }
 
-function peakText(days: number): string {
-  if (days === 0) return '今夜が極大！'
-  if (days > 0) return `極大まであと${days}日`
-  return `極大から${-days}日経過`
+function showerName(s: MeteorShower, lang: Lang): string {
+  return lang === 'ja' ? s.name : s.en
 }
 
-export function MeteorCard({ showers, upcoming }: Props) {
+function radiantDir(s: MeteorShower, lang: Lang): string {
+  return lang === 'ja' ? COMPASS_16[s.radiantIdx] : COMPASS_16_EN[s.radiantIdx]
+}
+
+function peakText(lang: Lang, days: number): string {
+  if (days === 0) return t(lang, 'meteors.tonightPeak')
+  if (days > 0) return t(lang, 'meteors.daysUntil', { d: days })
+  return t(lang, 'meteors.daysSince', { d: -days })
+}
+
+export function MeteorCard({ lang, showers, upcoming }: Props) {
   return (
-    <section className="card meteor-card" aria-label="流星群情報">
-      <div className="card-label">流星群</div>
+    <section className="card meteor-card" aria-label={t(lang, 'meteors.title')}>
+      <div className="card-label">{t(lang, 'meteors.title')}</div>
       {showers.length > 0 ? (
         <ul className="meteor-list">
           {showers.map(({ shower, daysToPeak }) => (
             <li key={shower.name} className="meteor-row">
               <div className="meteor-name">
-                {shower.name}
-                {daysToPeak === 0 && <span className="peak-badge">極大</span>}
+                {showerName(shower, lang)}
+                {daysToPeak === 0 && <span className="peak-badge">{t(lang, 'meteors.peak')}</span>}
               </div>
               <div className="meteor-detail">
-                {peakText(daysToPeak)} ・ 極大時 1時間に最大{shower.zhr}個 ・{' '}
-                {shower.radiantDirection}の空を中心に全天
+                {peakText(lang, daysToPeak)} ・{' '}
+                {t(lang, 'meteors.detail', { z: shower.zhr, dir: radiantDir(shower, lang) })}
               </div>
             </li>
           ))}
         </ul>
       ) : (
         <div className="meteor-detail">
-          現在活動中の主要流星群はありません。次は
-          <strong>{upcoming.shower.name}</strong>（
-          {fmtDateShort(new Date(new Date().getFullYear(), upcoming.shower.peak[0] - 1, upcoming.shower.peak[1]))}
-          極大・あと{upcoming.daysToPeak}日）
+          {t(lang, 'meteors.none', {
+            name: showerName(upcoming.shower, lang),
+            date: fmtDateShort(
+              new Date(new Date().getFullYear(), upcoming.shower.peak[0] - 1, upcoming.shower.peak[1]),
+              lang,
+            ),
+            d: upcoming.daysToPeak,
+          })}
         </div>
       )}
     </section>
