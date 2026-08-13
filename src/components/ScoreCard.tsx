@@ -1,6 +1,7 @@
 import type { Verdict } from '../lib/score'
-import { fmtDateShort, fmtTime } from '../lib/format'
+import { fmtTime } from '../lib/format'
 import { t, type Lang } from '../lib/i18n'
+import { LeaderRow, Section } from './Section'
 
 interface Props {
   lang: Lang
@@ -9,45 +10,32 @@ interface Props {
   bestTime: Date | null
   sunset: Date | null
   sunrise: Date | null
-  date: Date
   loading: boolean
   error: boolean
 }
 
-export function ScoreCard({ lang, verdict, score, bestTime, sunset, sunrise, date, loading, error }: Props) {
+export function ScoreCard({ lang, verdict, score, bestTime, sunset, sunrise, loading, error }: Props) {
   return (
-    <section className="card score-card" aria-label={t(lang, 'score.title', { date: fmtDateShort(date, lang) })}>
-      <div className="card-label">{t(lang, 'score.title', { date: fmtDateShort(date, lang) })}</div>
-      {loading && <div className="score-loading">{t(lang, 'score.loading')}</div>}
-      {error && <div className="score-loading">{t(lang, 'score.error')}</div>}
+    <Section index="01" labelJa="星空指数" labelEn="INDEX" lang={lang}>
+      {loading && <div className="status-line">{t(lang, 'score.loading')}</div>}
+      {error && <div className="status-error">{t(lang, 'score.error')}</div>}
       {verdict && score !== null && (
-        <>
-          <div className="score-main">
-            <div className={`score-number rank-${verdict.rank}`}>
-              {score}
-              <span className="score-unit">{t(lang, 'score.unit')}</span>
-            </div>
-            <div className="score-text">
-              <div className={`score-verdict rank-${verdict.rank}`}>{t(lang, `verdict.${verdict.rank}`)}</div>
-              <div className="score-advice">{t(lang, `advice.${verdict.rank}`)}</div>
+        <div className="score-layout">
+          <div className="score-figure">
+            <span className={`score-number rank-${verdict.rank}`}>{score}</span>
+            <span className="score-max">/100</span>
+          </div>
+          <div className="score-side">
+            <div className={`score-verdict rank-${verdict.rank}`}>{t(lang, `verdict.${verdict.rank}`)}</div>
+            <div className="score-advice">{t(lang, `advice.${verdict.rank}`)}</div>
+            <div className="score-leaders">
+              {bestTime && <LeaderRow label={t(lang, 'score.best')} value={fmtTime(bestTime)} />}
+              <LeaderRow label={t(lang, 'score.sunset')} value={fmtTime(sunset)} />
+              <LeaderRow label={t(lang, 'score.sunrise')} value={fmtTime(sunrise)} />
             </div>
           </div>
-          <div className="score-meta">
-            {bestTime && (
-              <span>
-                {t(lang, 'score.best')}{' '}
-                <strong>{t(lang, 'score.bestValue', { time: fmtTime(bestTime) })}</strong>
-              </span>
-            )}
-            <span>
-              {t(lang, 'score.sunset')} {fmtTime(sunset)}
-            </span>
-            <span>
-              {t(lang, 'score.sunrise')} {fmtTime(sunrise)}
-            </span>
-          </div>
-        </>
+        </div>
       )}
-    </section>
+    </Section>
   )
 }

@@ -13,6 +13,7 @@ import { fetchWeather, weatherAt, type HourWeather } from './lib/weather'
 import { fetchIssTle, findVisiblePasses, type TLE } from './lib/iss'
 import { activeShowers, nextPeak } from './lib/meteors'
 import { CITIES, type City } from './lib/geo'
+import { fmtBulletinDate } from './lib/format'
 import { detectLang, saveLang, t, type Lang } from './lib/i18n'
 import { LocationPicker } from './components/LocationPicker'
 import { ScoreCard } from './components/ScoreCard'
@@ -132,21 +133,30 @@ export default function App() {
   const upcoming = useMemo(() => nextPeak(hours[0]), [hours])
 
   return (
-    <div className="app">
-      <header className="header">
-        <div className="brand">
-          <h1 className="title">Yozora</h1>
-          <p className="subtitle">{t(lang, 'tagline')}</p>
+    <div className="app" data-night={overallVerdict?.rank === 4 ? 'red' : undefined}>
+      <header className="masthead">
+        <div className="masthead-top">
+          <div className="brand">
+            <h1 className="brand-name">YOZORA</h1>
+            <p className="brand-tag">
+              {lang === 'ja' ? 'ヨゾラ — 今夜、星は見える？' : t(lang, 'tagline')}
+            </p>
+          </div>
+          <div className="masthead-date">{fmtBulletinDate(hours[0])}</div>
         </div>
-        <div className="header-controls">
+        <div className="masthead-controls">
+          <LocationPicker lang={lang} location={location} onChange={setLocation} />
           <div className="lang-toggle" role="group" aria-label="Language">
             <button
               className={`lang-button ${lang === 'ja' ? 'lang-active' : ''}`}
               onClick={() => setLang('ja')}
               aria-pressed={lang === 'ja'}
             >
-              日本語
+              JA
             </button>
+            <span className="lang-sep" aria-hidden="true">
+              /
+            </span>
             <button
               className={`lang-button ${lang === 'en' ? 'lang-active' : ''}`}
               onClick={() => setLang('en')}
@@ -155,11 +165,11 @@ export default function App() {
               EN
             </button>
           </div>
-          <LocationPicker lang={lang} location={location} onChange={setLocation} />
         </div>
+        <div className="rule-graduated" aria-hidden="true" />
       </header>
 
-      <main className="grid">
+      <main>
         <ScoreCard
           lang={lang}
           verdict={overallVerdict}
@@ -167,11 +177,10 @@ export default function App() {
           bestTime={best?.time ?? null}
           sunset={sun.sunset}
           sunrise={sun.sunrise}
-          date={hours[0]}
           loading={!weather && !weatherError}
           error={weatherError}
         />
-        <HourlyChart lang={lang} hours={hourScores} />
+        <HourlyChart lang={lang} hours={hourScores} bestTime={best?.time ?? null} />
         <MoonCard lang={lang} moon={moon} />
         <PlanetsCard lang={lang} planets={planets} />
         <MeteorCard lang={lang} showers={showers} upcoming={upcoming} />
@@ -179,8 +188,13 @@ export default function App() {
       </main>
 
       <footer className="footer">
-        <p>{t(lang, 'footer.credits')}</p>
-        <p>{t(lang, 'footer.disclaimer')}</p>
+        <div>
+          <p className="footer-sources">
+            CALC ASTRONOMY-ENGINE / SATELLITE.JS · WX OPEN-METEO · TLE WHERETHEISS.AT
+          </p>
+          <p className="footer-disclaimer">{t(lang, 'footer.disclaimer')}</p>
+        </div>
+        <span className="footer-colophon">YOZORA — NIGHT SKY BULLETIN</span>
       </footer>
     </div>
   )

@@ -2,6 +2,7 @@ import { COMPASS_16, COMPASS_16_EN } from '../lib/geo'
 import type { ActiveShower, MeteorShower } from '../lib/meteors'
 import { fmtDateShort } from '../lib/format'
 import { t, type Lang } from '../lib/i18n'
+import { Section } from './Section'
 
 interface Props {
   lang: Lang
@@ -19,25 +20,38 @@ function radiantDir(s: MeteorShower, lang: Lang): string {
 
 function peakText(lang: Lang, days: number): string {
   if (days === 0) return t(lang, 'meteors.tonightPeak')
+  if (days === 1) return t(lang, 'meteors.dayUntil')
+  if (days === -1) return t(lang, 'meteors.daySince')
   if (days > 0) return t(lang, 'meteors.daysUntil', { d: days })
   return t(lang, 'meteors.daysSince', { d: -days })
 }
 
+/** ロケット打上げ規約の D− 表記。極大当日は PEAK */
+function dNotation(days: number): string {
+  if (days === 0) return 'D0'
+  return days > 0 ? `D−${days}` : `D+${-days}`
+}
+
 export function MeteorCard({ lang, showers, upcoming }: Props) {
   return (
-    <section className="card meteor-card" aria-label={t(lang, 'meteors.title')}>
-      <div className="card-label">{t(lang, 'meteors.title')}</div>
+    <Section index="05" labelJa="流星群" labelEn="METEORS" lang={lang}>
       {showers.length > 0 ? (
         <ul className="meteor-list">
           {showers.map(({ shower, daysToPeak }) => (
             <li key={shower.name} className="meteor-row">
-              <div className="meteor-name">
-                {showerName(shower, lang)}
-                {daysToPeak === 0 && <span className="peak-badge">{t(lang, 'meteors.peak')}</span>}
-              </div>
-              <div className="meteor-detail">
-                {peakText(lang, daysToPeak)} ・{' '}
-                {t(lang, 'meteors.detail', { z: shower.zhr, dir: radiantDir(shower, lang) })}
+              <span className="meteor-d" aria-hidden="true">
+                {dNotation(daysToPeak)}
+              </span>
+              <div className="meteor-main">
+                <div className="meteor-name">
+                  {showerName(shower, lang)}
+                  {daysToPeak === 0 && <span className="peak-badge">{t(lang, 'meteors.peak')}</span>}
+                </div>
+                <div className="meteor-detail">
+                  {peakText(lang, daysToPeak)}
+                  {lang === 'ja' ? ' ・ ' : ' · '}
+                  {t(lang, 'meteors.detail', { z: shower.zhr, dir: radiantDir(shower, lang) })}
+                </div>
               </div>
             </li>
           ))}
@@ -54,6 +68,6 @@ export function MeteorCard({ lang, showers, upcoming }: Props) {
           })}
         </div>
       )}
-    </section>
+    </Section>
   )
 }

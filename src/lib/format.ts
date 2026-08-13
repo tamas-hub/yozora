@@ -16,6 +16,13 @@ export function fmtDateShort(d: Date, lang: Lang = 'ja'): string {
   return `${WEEK_EN[d.getDay()]}, ${MONTH_EN[d.getMonth()]} ${d.getDate()}`
 }
 
+/** マストヘッドの発行日 `2026.08.14 THU`（曜日は言語共通の英3文字） */
+export function fmtBulletinDate(d: Date): string {
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}.${mm}.${dd} ${WEEK_EN[d.getDay()].toUpperCase()}`
+}
+
 /** 24時超えの「夜時刻」ラベル（例: 25時→「1時」） */
 export function fmtHourLabel(d: Date): string {
   return `${d.getHours()}`
