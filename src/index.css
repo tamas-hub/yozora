@@ -1,0 +1,430 @@
+:root {
+  --bg-top: #070b1c;
+  --bg-bottom: #131a36;
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-border: rgba(255, 255, 255, 0.09);
+  --ink: #eef1fb;
+  --ink-2: #b6bdd8;
+  --muted: #7c84a6;
+  --accent: #7dd3fc;
+  --gold: #fbbf24;
+  font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Noto Sans JP', system-ui, sans-serif;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%) fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+.app {
+  position: relative;
+}
+
+/* 星空背景（軽量: box-shadowで散らす） */
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+.stars::before,
+.stars::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow:
+    4vw 12vh 0 0 rgba(255, 255, 255, 0.7),
+    14vw 32vh 0 0 rgba(255, 255, 255, 0.4),
+    24vw 8vh 1px 0 rgba(255, 255, 255, 0.8),
+    33vw 44vh 0 0 rgba(255, 255, 255, 0.35),
+    41vw 18vh 0 0 rgba(255, 255, 255, 0.6),
+    52vw 28vh 1px 0 rgba(255, 255, 255, 0.75),
+    61vw 6vh 0 0 rgba(255, 255, 255, 0.45),
+    68vw 38vh 0 0 rgba(255, 255, 255, 0.55),
+    76vw 15vh 1px 0 rgba(255, 255, 255, 0.8),
+    85vw 47vh 0 0 rgba(255, 255, 255, 0.4),
+    92vw 24vh 0 0 rgba(255, 255, 255, 0.65),
+    9vw 62vh 0 0 rgba(255, 255, 255, 0.5),
+    21vw 78vh 1px 0 rgba(255, 255, 255, 0.6),
+    37vw 68vh 0 0 rgba(255, 255, 255, 0.35),
+    49vw 88vh 0 0 rgba(255, 255, 255, 0.55),
+    58vw 72vh 0 0 rgba(255, 255, 255, 0.4),
+    72vw 82vh 1px 0 rgba(255, 255, 255, 0.7),
+    83vw 64vh 0 0 rgba(255, 255, 255, 0.45),
+    95vw 76vh 0 0 rgba(255, 255, 255, 0.6);
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+.stars::after {
+  transform: translate(3vw, 5vh) scale(0.7);
+  animation-delay: 2s;
+  opacity: 0.7;
+}
+@keyframes twinkle {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stars::before,
+  .stars::after {
+    animation: none;
+  }
+}
+
+/* ヘッダー */
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.title {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+.subtitle {
+  margin: 2px 0 0;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.location-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.city-select,
+.geo-button {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.city-select:focus-visible,
+.geo-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.geo-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.geo-error {
+  color: #fca5a5;
+  font-size: 12px;
+  width: 100%;
+  text-align: right;
+}
+
+/* グリッド */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.score-card,
+.hourly-card,
+.iss-card {
+  grid-column: 1 / -1;
+}
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* カード共通 */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  backdrop-filter: blur(4px);
+}
+.card-label {
+  font-size: 12.5px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+.count-badge {
+  color: var(--accent);
+  margin-left: 6px;
+  font-weight: 600;
+}
+.score-loading {
+  color: var(--muted);
+  font-size: 14px;
+  padding: 8px 0;
+}
+.muted {
+  color: var(--muted);
+}
+
+/* スコアカード */
+.score-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.score-number {
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.score-unit {
+  font-size: 20px;
+  font-weight: 500;
+  margin-left: 2px;
+  color: var(--ink-2);
+}
+.score-verdict {
+  font-size: 22px;
+  font-weight: 700;
+}
+.score-advice {
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.rank-4 {
+  color: var(--gold);
+}
+.rank-3 {
+  color: #a5f3fc;
+}
+.rank-2 {
+  color: #93c5fd;
+}
+.rank-1 {
+  color: #a8b0cf;
+}
+.rank-0 {
+  color: #7c84a6;
+}
+.score-meta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--surface-border);
+  color: var(--ink-2);
+  font-size: 13.5px;
+}
+.score-meta strong {
+  color: var(--ink);
+}
+
+/* 時間別チャート */
+.hourly-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 120px;
+}
+.hour-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  cursor: default;
+}
+.hour-bar-area {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+.hour-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  min-height: 3px;
+  transition: height 0.4s ease;
+}
+.hour-label {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+/* ホバーツールチップ */
+.hour-col::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1c2340;
+  border: 1px solid var(--surface-border);
+  color: var(--ink);
+  font-size: 12px;
+  padding: 5px 9px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 5;
+}
+.hour-col:hover::after {
+  opacity: 1;
+}
+.hourly-note {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* 月カード */
+.moon-body {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.moon-svg {
+  width: 92px;
+  height: 92px;
+  flex-shrink: 0;
+}
+.moon-phase-name {
+  font-size: 20px;
+  font-weight: 700;
+}
+.moon-detail {
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.moon-impact {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* 惑星カード */
+.planet-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.planet-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 14px;
+}
+.planet-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  align-self: center;
+}
+.planet-name {
+  font-weight: 600;
+  width: 3em;
+}
+.planet-detail {
+  color: var(--ink-2);
+  font-size: 13.5px;
+}
+.planet-mag {
+  color: var(--muted);
+  font-size: 12px;
+}
+.planet-hidden {
+  opacity: 0.55;
+}
+
+/* ISSカード */
+.iss-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.iss-row {
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+}
+.iss-when {
+  font-size: 14.5px;
+}
+.iss-path {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* 流星群カード */
+.meteor-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.meteor-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+.peak-badge {
+  background: var(--gold);
+  color: #1c1502;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 1px 7px;
+  margin-left: 8px;
+  vertical-align: 2px;
+}
+.meteor-detail {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* フッター */
+.footer {
+  margin-top: 26px;
+  color: var(--muted);
+  font-size: 11.5px;
+  text-align: center;
+}
+.footer p {
+  margin: 3px 0;
+}
