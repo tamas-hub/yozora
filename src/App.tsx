@@ -61,7 +61,11 @@ export default function App() {
   }, [lang])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(location))
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(location))
+    } catch {
+      /* プライベートモード等でstorage不可でも動作継続 */
+    }
     setWeather(null)
     setWeatherError(false)
     let stale = false // 都市連続切替時に旧レスポンスの後着上書きを防ぐ
