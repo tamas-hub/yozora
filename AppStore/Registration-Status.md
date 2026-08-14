@@ -32,6 +32,8 @@
 - lint: 成功
 - 本番Webビルド: 成功
 - iOSシミュレータでビルド、インストール、起動、画面取得
+- 実機「TAMA」（iPhone 16 Pro / iOS 26.6）向けDebugビルド: 成功
+- 実機へのインストールと `jp.tama.yozora` の起動: 成功（起動プロセス確認済み）
 - 実機向けRelease archive: 成功
 - Privacy Manifestと暗号化申告キーをアーカイブ内で確認
 - 配布用IPAのApple事前検証: エラー0件
