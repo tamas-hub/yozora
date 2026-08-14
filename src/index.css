@@ -66,40 +66,32 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* 縦スクロール中もコンテンツがDynamic Islandの背面へ出ないようにする */
-body::before {
-  background: var(--ground);
-  content: '';
-  height: env(safe-area-inset-top);
-  inset: 0 0 auto;
-  pointer-events: none;
-  position: fixed;
-  z-index: 90;
-}
-.native-app body::before {
-  height: max(58px, env(safe-area-inset-top));
-}
-.native-status-mask {
-  display: none;
-}
-.native-app .native-status-mask {
-  background: var(--ground);
-  display: block;
-  height: max(58px, env(safe-area-inset-top));
-  inset: 0 0 auto;
-  pointer-events: none;
-  position: fixed;
-  z-index: 1000;
-}
-
 #root {
   max-width: 1080px;
   margin: 0 auto;
   padding:
-    max(24px, env(safe-area-inset-top))
+    max(24px, calc(env(safe-area-inset-top, 0px) + 12px))
     max(20px, env(safe-area-inset-right))
     max(48px, env(safe-area-inset-bottom))
     max(20px, env(safe-area-inset-left));
+  position: relative;
+  z-index: 1;
+}
+
+/* スクロール中の本文だけをステータス領域から隠し、固定バー状の境界は作らない */
+.native-app #root::before {
+  background: linear-gradient(
+    to bottom,
+    var(--ground) 0,
+    var(--ground) calc(100% - 8px),
+    transparent 100%
+  );
+  content: '';
+  height: calc(env(safe-area-inset-top, 0px) + 8px);
+  inset: 0 0 auto;
+  pointer-events: none;
+  position: fixed;
+  z-index: 100;
 }
 
 button {
@@ -296,12 +288,10 @@ button {
 .native-toolbar {
   align-items: center;
   border-bottom: 1px solid var(--rule);
-  border-left: 1px solid var(--rule-strong);
-  border-right: 1px solid var(--rule-strong);
   display: flex;
-  gap: 16px;
+  gap: 12px;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 8px 0;
 }
 .native-toolbar-cached {
   border-color: var(--accent-text);
@@ -340,6 +330,7 @@ button {
 .native-actions {
   display: flex;
   gap: 8px;
+  margin-left: auto;
 }
 .native-actions button,
 .status-error button {
@@ -982,18 +973,19 @@ select.city-select option {
 @media (max-width: 767px) {
   #root {
     padding:
-      max(16px, env(safe-area-inset-top))
+      max(16px, calc(env(safe-area-inset-top, 0px) + 12px))
       max(16px, env(safe-area-inset-right))
       max(40px, env(safe-area-inset-bottom))
       max(16px, env(safe-area-inset-left));
   }
   .native-toolbar {
-    align-items: stretch;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
   }
   .native-actions button {
-    flex: 1;
+    flex: 0 0 auto;
     justify-content: center;
+    padding: 7px 9px;
   }
   .section {
     grid-template-columns: 1fr;
@@ -1121,7 +1113,7 @@ select.city-select option {
   content: '';
   position: fixed;
   inset: -30% -10%;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
   background:
     radial-gradient(38% 30% at 22% 24%, rgba(46, 230, 168, 0.4), transparent 70%),
@@ -1157,22 +1149,8 @@ select.city-select option {
   background: rgba(13, 19, 44, 0.52);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
   backdrop-filter: blur(18px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
-  padding-left: 22px;
-  padding-right: 22px;
-  padding-bottom: 20px;
-}
-:root[data-theme='aurora'] .masthead {
-  padding-top: 18px;
-}
-:root[data-theme='aurora'] .section {
-  margin-top: 28px;
-  padding-top: 16px;
-}
-:root[data-theme='aurora'] .footer {
-  margin-top: 40px;
-  padding-top: 14px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
 }
 /* トンボはガラス上では非表示（印刷版面の記号のため） */
 :root[data-theme='aurora'] .masthead::before,

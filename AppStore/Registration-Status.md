@@ -8,7 +8,7 @@
 - Apple ID: 6801428026
 - Bundle ID: jp.tama.yozora
 - SKU: YOZORA-IOS-2026
-- バージョン / ビルド: 1.0 / 1
+- バージョン / ビルド: 1.0 / 3
 - 現在の状態: 提出準備中
 - 価格: 無料
 - 配信地域: 175地域
@@ -31,15 +31,20 @@
 - Web単体テスト: 53件成功
 - lint: 成功
 - 本番Webビルド: 成功
+- 昼・夜・極光テーマの主要レイアウト寸法一致を確認
+- iOS最上部の二重マスクを撤去し、safe area基準の余白へ統一
+- モバイル上部ツールバーを一段のコンパクト表示へ修正
 - iOSシミュレータでビルド、インストール、起動、画面取得
-- 実機「TAMA」（iPhone 16 Pro / iOS 26.6）向けDebugビルド: 成功
-- 実機へのインストールと `jp.tama.yozora` の起動: 成功（起動プロセス確認済み）
-- 実機向けRelease archive: 成功
+- 実機「TAMA」（iPhone 16 Pro / iOS 26.6）向けBuild 3 Debugビルド: 成功
+- Build 3の実機インストールと `jp.tama.yozora` の起動: 成功（起動プロセス確認済み）
+- Build 3のRelease archive: 成功
 - Privacy Manifestと暗号化申告キーをアーカイブ内で確認
 - 配布用IPAのApple事前検証: エラー0件
-- Build 1アップロード: 成功（Delivery UUID: 4eb9c8de-3f1a-4dcb-8d97-871c969a35bc）
-- Apple側のBuild処理: VALID / APP_STORE_ELIGIBLE
-- バージョン1.0にBuild 1を選択済み
+- Build 3アップロード: 成功（Delivery UUID: 353e45c5-2d63-49e8-88bf-d6f630bd3774）
+- Apple側のBuild 3処理: VALID / APP_STORE_ELIGIBLE
+- バージョン1.0にBuild 3を選択済み
+- 上部描画修正版の6.9インチ用スクリーンショット5枚を再作成・差し替え済み
+- スクリーンショット順序: ホーム、時間別、惑星、全国地図、観測一覧
 - 新しい実写スノードームアイコンがBuild情報に反映済み
 - 無料価格（各地域0.00）と175地域の配信可能状態を画面で再確認
 - バージョン画面で「審査用に追加」ボタンが利用可能なことを確認
