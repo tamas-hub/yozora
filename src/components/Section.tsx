@@ -13,7 +13,7 @@ interface Props {
 export function Section({ index, labelJa, labelEn, lang, children }: Props) {
   const label = lang === 'ja' ? labelJa : labelEn
   return (
-    <section className="section" aria-label={label}>
+    <section id={`section-${index}`} className="section" aria-label={label}>
       <div className="section-side">
         <span className="section-index">{index}</span>
         <span className={lang === 'ja' ? 'section-label section-label-ja' : 'section-label section-label-en'}>

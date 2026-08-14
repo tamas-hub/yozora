@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { fetchWeatherBatch, parseOpenMeteo, weatherAt } from '../weather'
+import { fetchWeather, fetchWeatherBatch, parseOpenMeteo, weatherAt } from '../weather'
 
 const sample = {
   hourly: {
@@ -71,5 +71,23 @@ describe('fetchWeatherBatch', () => {
       { name: '札幌', en: 'Sapporo', lat: 43.064, lon: 141.347 },
       { name: '東京', en: 'Tokyo', lat: 35.676, lon: 139.65 },
     ])).rejects.toThrow('weather batch response does not match requested cities')
+  })
+})
+
+describe('fetchWeather', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('現在地を約1km単位に丸めて外部APIへ送る', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify(sample), { status: 200 }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+
+    await fetchWeather(35.681236, 139.767125)
+
+    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining(
+      'latitude=35.68&longitude=139.77',
+    ))
+    expect(fetchMock).not.toHaveBeenCalledWith(expect.stringContaining('35.681'))
   })
 })

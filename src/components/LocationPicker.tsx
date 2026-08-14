@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CITIES, cityLabel, type City } from '../lib/geo'
 import { t, type Lang } from '../lib/i18n'
+import { getCurrentCoordinates } from '../lib/native'
 
 /** 十字照準（現在地）アイコン */
 function CrosshairIcon() {
@@ -25,29 +26,22 @@ export function LocationPicker({ lang, location, onChange }: Props) {
   const [locating, setLocating] = useState(false)
   const [geoError, setGeoError] = useState(false)
 
-  const useGeolocation = () => {
-    if (!navigator.geolocation) {
-      setGeoError(true)
-      return
-    }
+  const useGeolocation = async () => {
     setLocating(true)
     setGeoError(false)
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocating(false)
-        onChange({
-          name: '現在地',
-          en: 'Current location',
-          lat: Math.round(pos.coords.latitude * 1000) / 1000,
-          lon: Math.round(pos.coords.longitude * 1000) / 1000,
-        })
-      },
-      () => {
-        setLocating(false)
-        setGeoError(true)
-      },
-      { timeout: 10000 },
-    )
+    try {
+      const coordinates = await getCurrentCoordinates()
+      onChange({
+        name: '現在地',
+        en: 'Current location',
+        lat: Math.round(coordinates.lat * 1000) / 1000,
+        lon: Math.round(coordinates.lon * 1000) / 1000,
+      })
+    } catch {
+      setGeoError(true)
+    } finally {
+      setLocating(false)
+    }
   }
 
   const isCurrent = location.name === '現在地'

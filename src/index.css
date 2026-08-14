@@ -56,6 +56,7 @@
 html,
 body {
   margin: 0;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -63,6 +64,32 @@ body {
   background: var(--ground);
   font-weight: 500; /* Windows Yu Gothic の痩せ対策 */
   -webkit-font-smoothing: antialiased;
+}
+
+/* 縦スクロール中もコンテンツがDynamic Islandの背面へ出ないようにする */
+body::before {
+  background: var(--ground);
+  content: '';
+  height: env(safe-area-inset-top);
+  inset: 0 0 auto;
+  pointer-events: none;
+  position: fixed;
+  z-index: 90;
+}
+.native-app body::before {
+  height: max(58px, env(safe-area-inset-top));
+}
+.native-status-mask {
+  display: none;
+}
+.native-app .native-status-mask {
+  background: var(--ground);
+  display: block;
+  height: max(58px, env(safe-area-inset-top));
+  inset: 0 0 auto;
+  pointer-events: none;
+  position: fixed;
+  z-index: 1000;
 }
 
 #root {
@@ -266,6 +293,72 @@ button {
   font-size: 8px;
 }
 
+.native-toolbar {
+  align-items: center;
+  border-bottom: 1px solid var(--rule);
+  border-left: 1px solid var(--rule-strong);
+  border-right: 1px solid var(--rule-strong);
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+.native-toolbar-cached {
+  border-color: var(--accent-text);
+}
+.native-update-state {
+  align-items: center;
+  display: flex;
+  gap: 9px;
+  min-width: 0;
+}
+.native-update-state > span {
+  background: var(--accent);
+  display: block;
+  height: 7px;
+  width: 7px;
+}
+.native-toolbar-cached .native-update-state > span {
+  background: transparent;
+  border: 1px solid var(--accent-text);
+}
+.native-update-state div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.native-update-state strong {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.native-update-state small {
+  color: var(--ink-3);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.native-actions {
+  display: flex;
+  gap: 8px;
+}
+.native-actions button,
+.status-error button {
+  align-items: center;
+  background: var(--ground);
+  border: 1px solid var(--rule-strong);
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 13px;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 12px;
+}
+.native-actions button:disabled {
+  color: var(--ink-3);
+  cursor: wait;
+}
+
 /* 操作要素 */
 .select-wrap {
   position: relative;
@@ -327,7 +420,9 @@ select.city-select option {
 .map-station:focus-visible,
 .map-open-button:focus-visible,
 .map-error button:focus-visible,
-.station-list button:focus-visible {
+.station-list button:focus-visible,
+.native-actions button:focus-visible,
+.status-error button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -378,6 +473,7 @@ select.city-select option {
   border-top: 1px solid var(--rule);
   margin-top: 56px;
   padding-top: 18px;
+  scroll-margin-top: 118px;
   display: grid;
   grid-template-columns: 88px 1fr;
   column-gap: 20px;
@@ -442,6 +538,9 @@ select.city-select option {
   color: var(--error);
   font-family: inherit;
   font-size: 15px;
+}
+.status-error p {
+  margin: 0 0 12px;
 }
 
 /* ============ 01 星空指数 ============ */
@@ -852,6 +951,23 @@ select.city-select option {
   font-size: 11px;
   color: var(--ink-3);
 }
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 12px;
+}
+.footer-links a {
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-underline-offset: 3px;
+}
+.footer-links a:hover,
+.footer-links a:focus-visible {
+  color: var(--accent);
+}
 .footer-colophon {
   font-family: var(--font-display);
   font-variation-settings: 'wdth' 125;
@@ -865,7 +981,19 @@ select.city-select option {
 /* ============ モバイル（<768px） ============ */
 @media (max-width: 767px) {
   #root {
-    padding: 16px 16px 40px;
+    padding:
+      max(16px, env(safe-area-inset-top))
+      max(16px, env(safe-area-inset-right))
+      max(40px, env(safe-area-inset-bottom))
+      max(16px, env(safe-area-inset-left));
+  }
+  .native-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .native-actions button {
+    flex: 1;
+    justify-content: center;
   }
   .section {
     grid-template-columns: 1fr;

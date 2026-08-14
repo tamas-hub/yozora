@@ -30,8 +30,10 @@ export function parseOpenMeteo(json: OpenMeteoResponse): HourWeather[] {
 }
 
 export async function fetchWeather(lat: number, lon: number): Promise<HourWeather[]> {
+  // 星空予報に100m単位の位置精度は不要。外部APIへは約1km単位に丸め、
+  // 端末が返した詳細な現在地を送信しない。
   const url =
-    `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(3)}&longitude=${lon.toFixed(3)}` +
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(2)}&longitude=${lon.toFixed(2)}` +
     `&hourly=cloud_cover,visibility&forecast_days=3&timezone=auto`
   const res = await fetch(url)
   if (!res.ok) throw new Error(`weather fetch failed: ${res.status}`)

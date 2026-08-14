@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <title>プライバシーポリシー — YOZORA 星空予報</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background:#101014; color:#f3efe5; }
+    body { margin:0; }
+    main { box-sizing:border-box; max-width:760px; min-height:100vh; margin:auto; padding:64px 24px 96px; }
+    a { color:#dfb953; text-underline-offset:3px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,8vw,4rem); letter-spacing:-.04em; }
+    h2 { margin:48px 0 12px; padding-top:18px; border-top:1px solid #4b4944; font-size:1.15rem; }
+    p, li { color:#cfcbc2; line-height:1.8; }
+    .eyebrow, .updated { color:#9d998f; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:.78rem; letter-spacing:.08em; }
+    .summary { margin:28px 0; padding:18px; border:1px solid #4b4944; color:#f3efe5; }
+    footer { margin-top:64px; color:#9d998f; font-size:.85rem; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">YOZORA / PRIVACY</p>
+  <h1>プライバシーポリシー</h1>
+  <p class="updated">制定・最終更新：2026年8月14日</p>
+  <p class="summary">YOZORA 星空予報には、アカウント、広告、行動解析、ユーザー追跡はありません。現在地はユーザーがボタンを押した場合にだけ取得し、詳細な座標は端末内に保存します。</p>
+
+  <h2>1. 位置情報</h2>
+  <p>「現在地を使う」を選んだ場合、端末の位置情報を使って今夜の星空指数を計算します。取得した座標は端末内に保存され、選択地点と取得済み予報の再表示に使われます。位置情報への許可は任意で、許可しなくても登録済みの都市を選んで利用できます。</p>
+  <p>天気予報の取得時は、詳細な座標を約1km単位（小数点以下2桁）へ丸めてからOpen-Meteoへ送信します。開発者が運営するサーバーには送信・保存しません。</p>
+
+  <h2>2. 外部サービスへの通信</h2>
+  <ul>
+    <li><a href="https://open-meteo.com/en/terms">Open-Meteo</a>：雲量と視程の取得。丸めた位置情報と通常の通信情報（IPアドレス等）が送信されます。同サービスは障害調査用ログを最大90日保持する場合があります。</li>
+    <li><a href="https://wheretheiss.at/">WhereTheISS.at</a>／<a href="https://celestrak.org/">CelesTrak</a>：ISSの公開軌道データ取得。ユーザーの位置情報は送信しません。</li>
+  </ul>
+  <p>通信はアプリ機能の提供にのみ使われ、広告やユーザー追跡には使いません。</p>
+
+  <h2>3. 端末内に保存する情報</h2>
+  <p>選択地点、現在地、表示テーマ、表示言語、直近の天気予報を端末内に保存します。アプリを削除するとこれらの情報も削除されます。アカウントやクラウド同期はありません。</p>
+
+  <h2>4. App Storeでの表示</h2>
+  <p>App Storeのプライバシー申告では、外部の天気サービスへ送信される丸めた座標を「おおよその位置情報／アプリの機能／ユーザーに関連付けない／トラッキングに使用しない」として申告します。</p>
+
+  <h2>5. お問い合わせ</h2>
+  <p>ご質問や不具合報告は、<a href="https://github.com/tamas-hub/yozora/issues">YOZORAのGitHub Issues</a>からお知らせください。お問い合わせ時にご自身で記載した情報は、回答と問題解決に必要な範囲で扱います。</p>
+
+  <h2 lang="en">English summary</h2>
+  <p lang="en">YOZORA has no accounts, advertising, analytics, or tracking. Location is requested only after you tap “Use my location.” Precise coordinates remain on your device; coordinates sent to Open-Meteo are rounded to two decimal places (approximately 1 km) and used only to provide the forecast. Selected settings and the latest forecast are stored locally and are removed when you delete the app.</p>
+
+  <footer><a href="../">YOZORAに戻る</a> · <a href="../support/">サポート</a></footer>
+</main>
+</body>
+</html>

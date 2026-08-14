@@ -12,13 +12,19 @@ interface Props {
   sunrise: Date | null
   loading: boolean
   error: boolean
+  onRetry: () => void
 }
 
-export function ScoreCard({ lang, verdict, score, bestTime, sunset, sunrise, loading, error }: Props) {
+export function ScoreCard({ lang, verdict, score, bestTime, sunset, sunrise, loading, error, onRetry }: Props) {
   return (
     <Section index="01" labelJa="星空指数" labelEn="INDEX" lang={lang}>
       {loading && <div className="status-line">{t(lang, 'score.loading')}</div>}
-      {error && <div className="status-error">{t(lang, 'score.error')}</div>}
+      {error && (
+        <div className="status-error">
+          <p>{t(lang, 'score.error')}</p>
+          <button type="button" onClick={onRetry}>{t(lang, 'map.retry')}</button>
+        </div>
+      )}
       {verdict && score !== null && (
         <div className="score-layout">
           <div className="score-figure">

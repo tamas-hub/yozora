@@ -1,4 +1,4 @@
-# Yozora — 今夜の星空ナビ / Tonight's Stargazing Guide
+# YOZORA 星空予報 — 今夜の星空ナビ / Tonight's Stargazing Guide
 
 「**今夜、星は見える？**」に3秒で答えるWebアプリ。
 場所を選ぶ（または現在地）だけで、今夜の観測条件と見どころを1画面に集約します。
@@ -16,7 +16,8 @@
 - **ISS通過予報** — 今後3日の可視パス（出現方角→最大高度→消える方角）
 - **流星群** — 主要10流星群のカレンダーと今夜のアクティブ判定
 - **3つの表示モード** — 夜（観測報・ゴールド）/ 昼（紙にインク）/ 極光（オーロラ空＋ガラスパネル）
-- **ホーム画面アプリ** — iPhone / Android / PCへ追加でき、取得済みの画面と予報はオフラインでも再表示
+- **iOSネイティブアプリ** — 現在地、共有、触覚フィードバック、予報キャッシュをCapacitorで統合
+- **ホーム画面アプリ** — Android / PCへ追加でき、取得済みの画面と予報はオフラインでも再表示
 
 ## デザイン — 夜間観測報 / Night Sky Bulletin
 
@@ -34,6 +35,7 @@
 - TLE: [WhereTheISS.at](https://wheretheiss.at/)（フォールバック: Celestrak）
 - 地図: [Natural Earth](https://www.naturalearthdata.com/) 1:50m（パブリックドメイン、Japan geometryを静的SVG化）
 - PWA: Web App Manifest + Service Worker（ホーム画面追加、アプリ風起動、画面資産・取得済み予報のオフラインキャッシュ）
+- iOS: Capacitor 8 + Swift / UIKit（iPhone、iOS 15以降）
 
 ## 開発
 
@@ -42,7 +44,20 @@ npm install
 npm run dev    # 開発サーバ
 npm test       # vitest
 npm run build  # 本番ビルド（dist/）
+npm run ios:sync  # WebビルドとiOSプロジェクト同期
+npm run ios:open  # Xcodeワークスペースを開く
 ```
+
+iOS側は `ios/App/App.xcworkspace` を開き、`App` スキームを使用します。Bundle IDは `jp.tama.yozora`、表示名は「YOZORA 星空予報」です。
+
+## App Store素材
+
+審査用メタデータ、名称調査、プライバシー申告案、6.9インチ用スクリーンショットは `AppStore/` にまとめています。
+
+- [名称重複チェック](AppStore/Name-Check.md)
+- [提出チェックリスト](AppStore/Submission-Checklist.md)
+- [プライバシーポリシー](https://tamas-hub.github.io/yozora/privacy/)
+- [サポート](https://tamas-hub.github.io/yozora/support/)
 
 ## デプロイ
 

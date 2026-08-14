@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { t, type Lang } from '../lib/i18n'
+import { isNativeApp } from '../lib/native'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -60,7 +61,7 @@ export function InstallApp({ lang }: { lang: Lang }) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [showIosGuide])
 
-  if (standalone || (!ios && !promptEvent)) return null
+  if (isNativeApp() || standalone || (!ios && !promptEvent)) return null
 
   const handleInstall = async () => {
     if (ios) {

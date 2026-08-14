@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Body } from 'astronomy-engine'
 import {
   moonForScore,
@@ -12,8 +12,16 @@ import { computeScore, verdict } from './lib/score'
 import { fetchWeather, weatherAt, type HourWeather } from './lib/weather'
 import { fetchIssTle, findVisiblePasses, type TLE } from './lib/iss'
 import { activeShowers, nextPeak } from './lib/meteors'
-import { CITIES, type City } from './lib/geo'
+import { CITIES, cityLabel, type City } from './lib/geo'
 import { detectLang, saveLang, t, type Lang } from './lib/i18n'
+import { fmtTime } from './lib/format'
+import {
+  impactLight,
+  loadWeatherSnapshot,
+  notifyExcellentForecast,
+  onNativeAppActive,
+  saveWeatherSnapshot,
+} from './lib/native'
 import { ScoreCard } from './components/ScoreCard'
 import { HourlyChart, type HourScore } from './components/HourlyChart'
 import { MoonCard } from './components/MoonCard'
@@ -23,6 +31,7 @@ import { MeteorCard } from './components/MeteorCard'
 import { Masthead } from './components/Masthead'
 import { JapanMapPage } from './components/JapanMapPage'
 import { NetworkStatus } from './components/NetworkStatus'
+import { NativeToolbar } from './components/NativeToolbar'
 
 const STORAGE_KEY = 'yozora.location'
 const THEME_KEY = 'yozora.theme'
@@ -31,6 +40,7 @@ export type ThemeMode = 'night' | 'day' | 'aurora'
 type Page = 'bulletin' | 'map'
 
 function pageFromHash(): Page {
+  if (import.meta.env.VITE_SCREENSHOT_PAGE === 'map') return 'map'
   return window.location.hash === '#/map' ? 'map' : 'bulletin'
 }
 
@@ -68,10 +78,14 @@ export default function App() {
   const [page, setPage] = useState<Page>(pageFromHash)
   const [weather, setWeather] = useState<HourWeather[] | null>(null)
   const [weatherError, setWeatherError] = useState(false)
+  const [weatherUpdatedAt, setWeatherUpdatedAt] = useState<Date | null>(null)
+  const [weatherFromCache, setWeatherFromCache] = useState(false)
+  const [weatherRequestVersion, setWeatherRequestVersion] = useState(0)
   const [tle, setTle] = useState<TLE | null>(null)
   const [tleError, setTleError] = useState(false)
+  const [now, setNow] = useState(() => new Date())
+  const lastExcellentHaptic = useRef<string | null>(null)
 
-  const now = useMemo(() => new Date(), [])
   const hours = useMemo(() => tonightHours(now), [now])
   const { lat, lon } = location
 
@@ -102,6 +116,27 @@ export default function App() {
     }
   }, [theme])
 
+  useEffect(
+    () =>
+      onNativeAppActive(() => {
+        setNow(new Date())
+        setWeatherRequestVersion((version) => version + 1)
+      }),
+    [],
+  )
+
+  useEffect(() => {
+    const targetId = import.meta.env.VITE_SCREENSHOT_TARGET
+    if (!targetId) return
+    const timeout = window.setTimeout(() => {
+      const target = document.getElementById(targetId)
+      if (!target) return
+      const top = target.getBoundingClientRect().top + window.scrollY - 112
+      window.scrollTo({ top, behavior: 'auto' })
+    }, 2500)
+    return () => window.clearTimeout(timeout)
+  }, [page, weather])
+
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(location))
@@ -111,25 +146,42 @@ export default function App() {
     if (page === 'map') return
     setWeather(null)
     setWeatherError(false)
+    setWeatherUpdatedAt(null)
+    setWeatherFromCache(false)
     let stale = false // 都市連続切替時に旧レスポンスの後着上書きを防ぐ
-    fetchWeather(lat, lon)
-      .then((w) => {
-        if (!stale) setWeather(w)
-      })
-      .catch(() => {
-        if (!stale) setWeatherError(true)
-      })
+    void (async () => {
+      try {
+        const result = await fetchWeather(lat, lon)
+        if (stale) return
+        const fetchedAt = new Date()
+        setWeather(result)
+        setWeatherUpdatedAt(fetchedAt)
+        void saveWeatherSnapshot(lat, lon, result, fetchedAt)
+      } catch {
+        const snapshot = await loadWeatherSnapshot(lat, lon)
+        if (stale) return
+        if (snapshot) {
+          setWeather(snapshot.hours)
+          setWeatherUpdatedAt(snapshot.fetchedAt)
+          setWeatherFromCache(true)
+        } else {
+          setWeatherError(true)
+        }
+      }
+    })()
     return () => {
       stale = true
     }
-  }, [location, lat, lon, page])
+  }, [location, lat, lon, page, weatherRequestVersion])
 
   useEffect(() => {
     if (page === 'map') return
+    setTle(null)
+    setTleError(false)
     fetchIssTle()
       .then(setTle)
       .catch(() => setTleError(true))
-  }, [page])
+  }, [page, weatherRequestVersion])
 
   // 太陽: 日の入り（当日15時から探索）・日の出（翌0時から探索)
   const sun = useMemo(() => {
@@ -176,6 +228,14 @@ export default function App() {
 
   const overallVerdict = best ? verdict(best.score!) : null
 
+  useEffect(() => {
+    if (!weatherUpdatedAt || weatherFromCache || (best?.score ?? 0) < 80) return
+    const hapticKey = `${location.name}:${weatherUpdatedAt.toISOString()}`
+    if (lastExcellentHaptic.current === hapticKey) return
+    lastExcellentHaptic.current = hapticKey
+    void notifyExcellentForecast()
+  }, [best?.score, location.name, weatherFromCache, weatherUpdatedAt])
+
   const passes = useMemo(() => {
     if (!tle) return null
     try {
@@ -188,11 +248,38 @@ export default function App() {
   const showers = useMemo(() => activeShowers(hours[0]), [hours])
   const upcoming = useMemo(() => nextPeak(hours[0]), [hours])
 
+  const refresh = () => {
+    setNow(new Date())
+    setWeatherRequestVersion((version) => version + 1)
+  }
+
+  const changeLocation = (city: City) => {
+    void impactLight()
+    setLocation(city)
+    setNow(new Date())
+  }
+
+  const shareMessage = best
+    ? t(lang, 'native.shareMessage', {
+        location: cityLabel(location, lang),
+        score: best.score ?? '—',
+        time: fmtTime(best.time),
+      })
+    : null
+
   const footer = (
     <footer className="footer">
       <div>
         <p className="footer-sources">{t(lang, 'footer.credits')}</p>
         <p className="footer-disclaimer">{t(lang, 'footer.disclaimer')}</p>
+        <nav className="footer-links" aria-label={t(lang, 'footer.linksAria')}>
+          <a href="https://tamas-hub.github.io/yozora/privacy/" target="_blank" rel="noreferrer">
+            {t(lang, 'footer.privacy')}
+          </a>
+          <a href="https://tamas-hub.github.io/yozora/support/" target="_blank" rel="noreferrer">
+            {t(lang, 'footer.support')}
+          </a>
+        </nav>
       </div>
       <span className="footer-colophon">YOZORA — NIGHT SKY BULLETIN</span>
     </footer>
@@ -207,7 +294,7 @@ export default function App() {
           theme={theme}
           page="map"
           location={location}
-          onLocationChange={setLocation}
+          onLocationChange={changeLocation}
           onLangChange={setLang}
           onThemeChange={setTheme}
         />
@@ -216,7 +303,7 @@ export default function App() {
           lang={lang}
           now={now}
           onOpenCity={(city) => {
-            setLocation(city)
+            changeLocation(city)
             window.location.hash = '#/'
           }}
         />
@@ -233,11 +320,19 @@ export default function App() {
         theme={theme}
         page="bulletin"
         location={location}
-        onLocationChange={setLocation}
+        onLocationChange={changeLocation}
         onLangChange={setLang}
         onThemeChange={setTheme}
       />
       <NetworkStatus lang={lang} />
+      <NativeToolbar
+        lang={lang}
+        updatedAt={weatherUpdatedAt}
+        cached={weatherFromCache}
+        shareMessage={shareMessage}
+        refreshing={!weather && !weatherError}
+        onRefresh={refresh}
+      />
 
       <main>
         <ScoreCard
@@ -249,6 +344,7 @@ export default function App() {
           sunrise={sun.sunrise}
           loading={!weather && !weatherError}
           error={weatherError}
+          onRetry={refresh}
         />
         <HourlyChart lang={lang} hours={hourScores} bestTime={best?.time ?? null} />
         <MoonCard lang={lang} moon={moon} />
