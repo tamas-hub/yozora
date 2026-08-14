@@ -240,9 +240,27 @@ select.city-select option {
 .city-select:focus-visible,
 .geo-button:focus-visible,
 .lang-button:focus-visible,
-.bar-col:focus-visible {
+.bar-col:focus-visible,
+.page-link:focus-visible,
+.map-station:focus-visible,
+.map-open-button:focus-visible,
+.map-error button:focus-visible,
+.station-list button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+.page-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid var(--rule-strong);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
 }
 
 /* JA/EN 切替 */
@@ -969,4 +987,378 @@ select.city-select option {
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
+}
+
+/* ============ 全国地図 / 列島観測網 ============ */
+.map-hero {
+  max-width: 920px;
+  margin-top: 48px;
+}
+.map-eyebrow {
+  margin: 0 0 8px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+.map-hero h2 {
+  margin: 0;
+  max-width: 900px;
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' 112;
+  font-size: clamp(38px, 5.2vw, 58px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.map-hero > p:last-child {
+  max-width: 700px;
+  margin: 18px 0 0;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+.map-layout {
+  display: grid;
+  grid-template-columns: minmax(360px, 1.15fr) minmax(300px, 0.85fr);
+  gap: 28px;
+  align-items: start;
+}
+.map-figure-wrap {
+  min-width: 0;
+  background: var(--ground-well);
+  padding: 12px;
+}
+.japan-map {
+  display: block;
+  width: 100%;
+  max-height: 590px;
+}
+.japan-outline path {
+  fill: var(--ground);
+  stroke: var(--rule-strong);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+.map-grid path {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 0.7;
+  stroke-dasharray: 2 8;
+  vector-effect: non-scaling-stroke;
+}
+.map-station {
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.map-station line {
+  stroke: currentColor;
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+.map-station-hit {
+  fill: transparent;
+}
+.map-station-ring {
+  fill: var(--ground);
+  stroke: currentColor;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.map-station-score {
+  fill: currentColor;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+}
+.map-station-name {
+  fill: var(--ink-2);
+  font-family: var(--font-ja);
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+}
+.map-station-selected .map-station-ring {
+  fill: currentColor;
+  stroke-width: 3;
+}
+.map-station-selected .map-station-score {
+  fill: var(--ground);
+}
+.map-rank-4 { color: var(--rank-4); }
+.map-rank-3 { color: var(--rank-3); }
+.map-rank-2 { color: var(--rank-2); }
+.map-rank-1 { color: var(--rank-1); }
+.map-rank-0,
+.map-rank-none { color: var(--rank-0); }
+.map-legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 6px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+.map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.map-legend i {
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--rule-strong);
+}
+.legend-high { background: var(--rank-4); }
+.legend-mid { background: var(--ink-2); }
+.legend-low { background-color: var(--ground); }
+
+.map-detail {
+  min-width: 0;
+  padding-top: 4px;
+}
+.map-detail-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+.map-detail-heading h3 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.2;
+}
+.map-detail-heading p {
+  margin: 6px 0 0;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+.map-best-label {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 2px 7px;
+  background: var(--accent);
+  color: var(--badge-ink);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+.map-detail-score {
+  display: flex;
+  align-items: baseline;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' 125;
+  font-size: 68px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+}
+.map-detail-score small {
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.map-detail-leaders {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  margin-top: 24px;
+}
+.map-timeline-wrap {
+  margin-top: 24px;
+}
+.map-timeline-title {
+  margin: 0 0 8px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.map-timeline {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.map-timeline li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  padding: 6px 2px;
+  background: var(--ground-well);
+  font-family: var(--font-mono);
+  line-height: 1.25;
+}
+.map-hour-twilight {
+  background-image: repeating-linear-gradient(45deg, var(--rule) 0 1px, transparent 1px 5px) !important;
+}
+.map-hour-time {
+  color: var(--ink-3);
+  font-size: 9px;
+}
+.map-hour-score {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+.map-hour-cloud {
+  color: var(--ink-3);
+  font-size: 9px;
+}
+.map-open-button,
+.map-error button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 46px;
+  margin-top: 24px;
+  padding: 10px 14px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+}
+.map-status,
+.map-error {
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-2);
+  text-align: center;
+}
+.map-status-mark {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 16px;
+  border: 1px solid var(--rule-strong);
+  background-image: repeating-linear-gradient(45deg, var(--rule) 0 1px, transparent 1px 5px);
+}
+.map-error p {
+  max-width: 520px;
+}
+.map-error button {
+  width: auto;
+  margin-top: 12px;
+}
+.station-list-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 10px;
+}
+.station-list-heading h3 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+.station-list-heading p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 11px;
+}
+.station-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.station-list li {
+  border-top: 1px solid var(--rule);
+}
+.station-list button {
+  display: grid;
+  grid-template-columns: 42px minmax(6em, 1fr) minmax(11em, 2fr) 70px 54px;
+  column-gap: 14px;
+  align-items: center;
+  width: 100%;
+  min-height: 54px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+.station-list button:hover,
+.station-list .station-row-active {
+  background: var(--ground-well);
+}
+.station-rank,
+.station-best {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.station-city {
+  font-size: 15px;
+  font-weight: 600;
+}
+.station-verdict {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.station-score {
+  justify-self: end;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-variation-settings: 'wdth' 125;
+  line-height: 1;
+}
+
+@media (max-width: 767px) {
+  .page-link {
+    order: -1;
+  }
+  .map-hero {
+    margin-top: 36px;
+  }
+  .map-hero h2 {
+    font-size: clamp(36px, 12vw, 52px);
+  }
+  .map-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .map-figure-wrap {
+    padding: 4px;
+  }
+  .japan-map {
+    max-height: none;
+  }
+  .map-detail-heading h3 {
+    font-size: 28px;
+  }
+  .map-detail-score {
+    font-size: 58px;
+  }
+  .station-list-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .station-list button {
+    grid-template-columns: 32px minmax(0, 1fr) 50px;
+    column-gap: 8px;
+  }
+  .station-verdict,
+  .station-best {
+    display: none;
+  }
+  .station-score {
+    font-size: 22px;
+  }
 }

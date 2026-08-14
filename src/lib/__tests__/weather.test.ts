@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { parseOpenMeteo, weatherAt } from '../weather'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { fetchWeatherBatch, parseOpenMeteo, weatherAt } from '../weather'
 
 const sample = {
   hourly: {
@@ -30,5 +30,46 @@ describe('weatherAt', () => {
 
   it('1時間超離れていたら null', () => {
     expect(weatherAt(hours, new Date(2026, 7, 14, 23, 30))).toBeNull()
+  })
+})
+
+describe('fetchWeatherBatch', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('複数都市を1リクエストで取得し、入力順に返す', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify([
+      sample,
+      { hourly: { ...sample.hourly, cloud_cover: [90, 70, 60] } },
+    ]), { status: 200 }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const cities = [
+      { name: '札幌', en: 'Sapporo', lat: 43.064, lon: 141.347 },
+      { name: '東京', en: 'Tokyo', lat: 35.676, lon: 139.65 },
+    ]
+    const result = await fetchWeatherBatch(cities)
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('latitude=43.064,35.676&longitude=141.347,139.650'))
+    expect(result.map((hours) => hours[0].cloud)).toEqual([10, 90])
+  })
+
+  it('空配列ではリクエストしない', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(fetchWeatherBatch([])).resolves.toEqual([])
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('レスポンス件数が都市数と一致しなければ失敗する', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(
+      new Response(JSON.stringify([sample]), { status: 200 }),
+    ))
+
+    await expect(fetchWeatherBatch([
+      { name: '札幌', en: 'Sapporo', lat: 43.064, lon: 141.347 },
+      { name: '東京', en: 'Tokyo', lat: 35.676, lon: 139.65 },
+    ])).rejects.toThrow('weather batch response does not match requested cities')
   })
 })

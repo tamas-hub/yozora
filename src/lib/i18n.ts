@@ -29,6 +29,38 @@ const DICT = {
   'theme.night': { ja: '夜', en: 'NIGHT' },
   'theme.day': { ja: '昼', en: 'DAY' },
   'theme.aurora': { ja: '極光', en: 'AURORA' },
+  'nav.map': { ja: '地図で見る', en: 'View map' },
+  'nav.bulletin': { ja: '地点別に見る', en: 'View one location' },
+  'map.eyebrow': { ja: '列島観測網 / 主要12地点', en: 'NATIONAL OBSERVATION GRID / 12 STATIONS' },
+  'map.title': { ja: '今夜の夜空日和を、一望。', en: 'Tonight across Japan, at a glance.' },
+  'map.intro': {
+    ja: '各地の暗夜時間から最も条件のよい1時間を算出しています。数字を選ぶと、雲量・視程・月明かり・時間別推移を確認できます。',
+    en: 'Each score is the best dark-hour window tonight. Select a station for clouds, visibility, moonlight and the hourly outlook.',
+  },
+  'map.loading': { ja: '全国12地点の夜空を観測中…', en: 'Reading the sky at 12 stations…' },
+  'map.error': {
+    ja: '全国の天気データを取得できませんでした。通信環境を確認して、もう一度お試しください。',
+    en: "Couldn't load the nationwide forecast. Check your connection and try again.",
+  },
+  'map.retry': { ja: '再取得する', en: 'Try again' },
+  'map.aria': { ja: '日本各地の今夜の星空指数地図', en: 'Map of tonight’s stargazing scores across Japan' },
+  'map.selectAria': { ja: '{city}の詳細を表示', en: 'Show details for {city}' },
+  'map.bestTonight': { ja: '全国ベスト', en: 'BEST TONIGHT' },
+  'map.score': { ja: '星空指数', en: 'Stargazing score' },
+  'map.cloud': { ja: '雲量', en: 'Cloud cover' },
+  'map.visibility': { ja: '視程', en: 'Visibility' },
+  'map.moon': { ja: '月明かり', en: 'Moonlight' },
+  'map.moonBelow': { ja: '月は地平線下', en: 'Moon below horizon' },
+  'map.moonUp': { ja: '輝面{illum}%・高度{alt}°', en: '{illum}% lit · altitude {alt}°' },
+  'map.timeline': { ja: '18時から翌5時の推移', en: 'HOURLY / 18:00–05:00' },
+  'map.twilight': { ja: '薄明', en: 'Twilight' },
+  'map.noData': { ja: '—', en: '—' },
+  'map.open': { ja: 'この地点を詳しく見る', en: 'Open full bulletin for this location' },
+  'map.stations': { ja: '全国観測点', en: 'ALL STATIONS' },
+  'map.stationNote': {
+    ja: '点数は今夜の暗夜時間で最も条件のよい1時間。観測地の標高・光害・地形は含みません。',
+    en: 'Scores show the best dark hour tonight and do not include local elevation, light pollution or terrain.',
+  },
   'score.loading': { ja: '観測待機中 — 天気を確認しています', en: 'STANDBY — checking the weather' },
   'score.error': {
     ja: '天気データを取得できませんでした。通信環境を確認して再読み込みしてください。',
@@ -123,6 +155,7 @@ const DICT = {
   'loc.selectAria': { ja: '都市を選択', en: 'Choose a city' },
   'loc.useCurrent': { ja: '現在地を使う', en: 'Use my location' },
   'app.title': { ja: 'Yozora — 今夜の星空ナビ', en: 'Yozora — tonight’s stargazing guide' },
+  'app.mapTitle': { ja: 'Yozora — 全国の夜空日和', en: 'Yozora — tonight across Japan' },
 } satisfies Record<string, Entry>
 
 export type DictKey = keyof typeof DICT
