@@ -24,6 +24,20 @@ import { IssCard } from './components/IssCard'
 import { MeteorCard } from './components/MeteorCard'
 
 const STORAGE_KEY = 'yozora.location'
+const THEME_KEY = 'yozora.theme'
+
+export type ThemeMode = 'night' | 'day' | 'aurora'
+const THEMES: ThemeMode[] = ['night', 'day', 'aurora']
+
+function detectTheme(): ThemeMode {
+  try {
+    const saved = localStorage.getItem(THEME_KEY)
+    if (saved === 'night' || saved === 'day' || saved === 'aurora') return saved
+  } catch {
+    /* ignore */
+  }
+  return 'night'
+}
 
 function loadLocation(): City {
   try {
@@ -44,6 +58,7 @@ function loadLocation(): City {
 
 export default function App() {
   const [lang, setLang] = useState<Lang>(detectLang)
+  const [theme, setTheme] = useState<ThemeMode>(detectTheme)
   const [location, setLocation] = useState<City>(loadLocation)
   const [weather, setWeather] = useState<HourWeather[] | null>(null)
   const [weatherError, setWeatherError] = useState(false)
@@ -59,6 +74,15 @@ export default function App() {
     document.documentElement.lang = lang
     document.title = t(lang, 'app.title')
   }, [lang])
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    try {
+      localStorage.setItem(THEME_KEY, theme)
+    } catch {
+      /* storage不可でも動作継続 */
+    }
+  }, [theme])
 
   useEffect(() => {
     try {
@@ -156,6 +180,24 @@ export default function App() {
         </div>
         <div className="masthead-controls">
           <LocationPicker lang={lang} location={location} onChange={setLocation} />
+          <div className="lang-toggle theme-toggle" role="group" aria-label={t(lang, 'theme.groupAria')}>
+            {THEMES.map((m, i) => (
+              <span key={m} className="theme-toggle-item">
+                {i > 0 && (
+                  <span className="lang-sep" aria-hidden="true">
+                    /
+                  </span>
+                )}
+                <button
+                  className={`lang-button ${theme === m ? 'lang-active' : ''}`}
+                  onClick={() => setTheme(m)}
+                  aria-pressed={theme === m}
+                >
+                  {t(lang, `theme.${m}`)}
+                </button>
+              </span>
+            ))}
+          </div>
           <div className="lang-toggle" role="group" aria-label={t(lang, 'lang.groupAria')}>
             <button
               className={`lang-button ${lang === 'ja' ? 'lang-active' : ''}`}

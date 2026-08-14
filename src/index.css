@@ -20,11 +20,11 @@
   --ink-3: #8b887d;
   --rule: #3a3a40;
   --rule-strong: #55555e;
-  --accent: #ff4e1a;
-  --accent-text: #ff6b3d; /* 小サイズ文字用(〜17px) */
+  --accent: #ffd700; /* ゴールド（対--ground 約12.8:1） */
+  --accent-text: #ffdf4d; /* 小サイズ文字用(〜17px)・やや明るめ */
   --error: #ff8a70;
 
-  --rank-4: #ff4e1a;
+  --rank-4: #ffd700;
   --rank-3: #f2efe6;
   --rank-2: #c9c5b8;
   --rank-1: #9b978b;
@@ -35,6 +35,8 @@
   --bar-3: #94908a; /* 40-59 */
   --bar-2: #6b685f; /* 20-39 */
   --bar-1: #4e4b44; /* 0-19 +ハッチ */
+
+  --badge-ink: #101014; /* 極大バッジの文字色（アクセント地の上） */
 
   --font-display: 'Archivo Variable', 'Archivo', sans-serif;
   --font-mono: 'IBM Plex Mono', 'Consolas', monospace;
@@ -201,8 +203,8 @@ button {
 }
 /* option可読性の二重防御(§color-scheme に加えて直接指定) */
 select.city-select option {
-  background-color: #101014;
-  color: #f2efe6;
+  background-color: var(--ground);
+  color: var(--ink);
 }
 .select-chevron {
   position: absolute;
@@ -656,7 +658,7 @@ select.city-select option {
 }
 .peak-badge {
   background: var(--accent);
-  color: #101014;
+  color: var(--badge-ink);
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.1em;
@@ -819,4 +821,152 @@ select.city-select option {
   .bar-fill {
     transition: none;
   }
+}
+
+/* ============================================================
+   テーマ: 夜(既定=上記トークン) / 昼 day / 極光 aurora
+   data-theme は documentElement に付与される
+   ============================================================ */
+
+/* ---- 昼: 紙にインクの日中版 ---- */
+:root[data-theme='day'] {
+  color-scheme: light;
+  --ground: #f4f1e8;
+  --ground-well: #ece8dc;
+  --plate: #ffffff;
+  --ink: #1a1a1e;
+  --ink-2: #46464c;
+  --ink-3: #63615a;
+  --rule: #d6d2c6;
+  --rule-strong: #8b887d;
+  --accent: #8a6d00; /* 紙地では暗色ゴールド（可読性優先） */
+  --accent-text: #7a6000;
+  --error: #b3261e;
+  --rank-4: #8a6d00;
+  --rank-3: #1a1a1e;
+  --rank-2: #46464c;
+  --rank-1: #63615a;
+  --rank-0: #75726a;
+  --bar-5: #1a1a1e; /* 紙地では濃いほど好条件 */
+  --bar-4: #4a4a50;
+  --bar-3: #7c7a72;
+  --bar-2: #aba89c;
+  --bar-1: #d5d1c4;
+  --badge-ink: #ffffff;
+}
+
+/* ---- 極光: オーロラ空＋ガラスパネル ---- */
+:root[data-theme='aurora'] {
+  --ground: #0a0f26;
+  --ground-well: rgba(255, 255, 255, 0.05);
+  --plate: rgba(8, 12, 32, 0.88);
+  --ink: #f2f5ff;
+  --ink-2: #bcc6e2;
+  --ink-3: #8e97bc;
+  --rule: rgba(255, 255, 255, 0.16);
+  --rule-strong: rgba(255, 255, 255, 0.34);
+  --accent: #5ff3c0; /* オーロラミント */
+  --accent-text: #8cf7d4;
+  --error: #ff8a95;
+  --rank-4: #5ff3c0;
+  --rank-3: #f2f5ff;
+  --rank-2: #c3cde8;
+  --rank-1: #98a2c6;
+  --rank-0: #8790b4;
+  --bar-5: #f2f5ff;
+  --bar-4: #c2cbe0;
+  --bar-3: #939cb8;
+  --bar-2: #6a7390;
+  --bar-1: #4a5170;
+  --badge-ink: #0a0f26;
+}
+
+:root[data-theme='aurora'] body {
+  background: linear-gradient(180deg, #05081a 0%, #0a0f26 55%, #0d1330 100%) fixed;
+}
+:root[data-theme='aurora'] body::before,
+:root[data-theme='aurora'] body::after {
+  content: '';
+  position: fixed;
+  inset: -30% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 30% at 22% 24%, rgba(46, 230, 168, 0.4), transparent 70%),
+    radial-gradient(30% 26% at 75% 18%, rgba(124, 92, 255, 0.34), transparent 70%),
+    radial-gradient(34% 30% at 55% 48%, rgba(43, 179, 255, 0.26), transparent 70%);
+  filter: blur(48px);
+  animation: aurora-drift 26s ease-in-out infinite alternate;
+}
+:root[data-theme='aurora'] body::after {
+  animation-duration: 34s;
+  animation-delay: -12s;
+  opacity: 0.65;
+}
+@keyframes aurora-drift {
+  from {
+    transform: translate3d(-4%, -2%, 0) rotate(-2deg);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) rotate(2deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme='aurora'] body::before,
+  :root[data-theme='aurora'] body::after {
+    animation: none;
+  }
+}
+
+/* ガラスパネル（極光のみ。夜・昼はフラット刷りを維持） */
+:root[data-theme='aurora'] .masthead,
+:root[data-theme='aurora'] .section,
+:root[data-theme='aurora'] .footer {
+  background: rgba(13, 19, 44, 0.52);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding-left: 22px;
+  padding-right: 22px;
+  padding-bottom: 20px;
+}
+:root[data-theme='aurora'] .masthead {
+  padding-top: 18px;
+}
+:root[data-theme='aurora'] .section {
+  margin-top: 28px;
+  padding-top: 16px;
+}
+:root[data-theme='aurora'] .footer {
+  margin-top: 40px;
+  padding-top: 14px;
+}
+/* トンボはガラス上では非表示（印刷版面の記号のため） */
+:root[data-theme='aurora'] .masthead::before,
+:root[data-theme='aurora'] .masthead::after,
+:root[data-theme='aurora'] .section::before,
+:root[data-theme='aurora'] .section::after,
+:root[data-theme='aurora'] .footer::before,
+:root[data-theme='aurora'] .footer::after {
+  display: none;
+}
+:root[data-theme='aurora'] .city-select,
+:root[data-theme='aurora'] .geo-button {
+  background: rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+:root[data-theme='aurora'] .chart-well {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+:root[data-theme='aurora'] .bar-value {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.theme-toggle-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
 }

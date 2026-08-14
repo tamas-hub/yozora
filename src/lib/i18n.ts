@@ -25,6 +25,10 @@ type Entry = { ja: string; en: string }
 const DICT = {
   tagline: { ja: 'ヨゾラ — 今夜、星は見える？', en: 'Will the stars be out tonight?' },
   'lang.groupAria': { ja: '言語', en: 'Language' },
+  'theme.groupAria': { ja: '表示モード', en: 'Theme' },
+  'theme.night': { ja: '夜', en: 'NIGHT' },
+  'theme.day': { ja: '昼', en: 'DAY' },
+  'theme.aurora': { ja: '極光', en: 'AURORA' },
   'score.loading': { ja: '観測待機中 — 天気を確認しています', en: 'STANDBY — checking the weather' },
   'score.error': {
     ja: '天気データを取得できませんでした。通信環境を確認して再読み込みしてください。',
