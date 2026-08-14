@@ -3,10 +3,12 @@ import { cityLabel, type City } from '../lib/geo'
 import { fmtTime } from '../lib/format'
 import { t, type Lang } from '../lib/i18n'
 import {
+  JAPAN_MAP_VIEWBOX,
   NIGHT_MAP_POINTS,
   summarizeNightPoint,
   type NightMapSummary,
 } from '../lib/nightMap'
+import { JAPAN_OUTLINE_PATH } from '../lib/japanOutline'
 import { tonightHours } from '../lib/astro'
 import { fetchWeatherBatch } from '../lib/weather'
 import { LeaderRow, Section } from './Section'
@@ -35,17 +37,14 @@ function JapanMapGraphic({
   onSelect: (name: string) => void
 }) {
   return (
-    <svg className="japan-map" viewBox="0 0 390 560" role="group" aria-label={t(lang, 'map.aria')}>
+    <svg
+      className="japan-map"
+      viewBox={`0 0 ${JAPAN_MAP_VIEWBOX.width} ${JAPAN_MAP_VIEWBOX.height}`}
+      role="group"
+      aria-label={t(lang, 'map.aria')}
+    >
       <g className="japan-outline" aria-hidden="true">
-        <path d="M276 35 315 21l35 19 9 34-20 19-12 34-40-5-25-25 12-25-9-19Z" />
-        <path d="M322 145c-5 24-16 42-20 65-5 29 9 49 5 74-4 24-26 30-44 39-21 10-38 29-60 39-25 11-52 12-77 27l-22-15c29-18 59-23 86-38 25-14 39-36 59-53 19-16 32-34 35-60 3-28 6-58 22-81Z" />
-        <path d="M126 391c22-8 49-4 68 8l-16 27-50-2-17-18Z" />
-        <path d="M70 383c25-5 43 11 52 29l-14 20-14 38-24 23-24-13 7-34-14-22 12-30Z" />
-        <path d="m42 501 11 7-8 14-13-7Z" />
-        <path d="m23 532 10-7 11 7-6 13-12 2Z" />
-      </g>
-      <g className="map-grid" aria-hidden="true">
-        <path d="M18 140h354M18 280h354M18 420h354M98 16v528M196 16v528M294 16v528" />
+        <path d={JAPAN_OUTLINE_PATH} fillRule="evenodd" />
       </g>
       {summaries.map((summary) => {
         const { point } = summary
@@ -66,10 +65,17 @@ function JapanMapGraphic({
               }
             }}
           >
+            <line
+              className="map-station-line-halo"
+              x1={point.x}
+              y1={point.y}
+              x2={point.labelX}
+              y2={point.labelY - 4}
+            />
             <line x1={point.x} y1={point.y} x2={point.labelX} y2={point.labelY - 4} />
             <circle className="map-station-hit" cx={point.x} cy={point.y} r="22" />
-            <circle className="map-station-ring" cx={point.x} cy={point.y} r="16" />
-            <text className="map-station-score" x={point.x} y={point.y + 4} textAnchor="middle">
+            <circle className="map-station-ring" cx={point.x} cy={point.y} r="14" />
+            <text className="map-station-score" x={point.x} y={point.y + 3.5} textAnchor="middle">
               {summary.score ?? '–'}
             </text>
             <text
@@ -229,6 +235,7 @@ export function JapanMapPage({ lang, now, onOpenCity }: Props) {
                 <span><i className="legend-mid" />40–79</span>
                 <span><i className="legend-low hatch-45" />0–39</span>
               </div>
+              <p className="map-source">MAP DATA / NATURAL EARTH · WGS84</p>
             </div>
             {selected && (
               <PointDetail lang={lang} summary={selected} bestName={bestName} onOpenCity={onOpenCity} />

@@ -11,33 +11,56 @@ export interface NightMapPoint extends City {
   labelAnchor: 'start' | 'end'
 }
 
+export const JAPAN_MAP_VIEWBOX = {
+  width: 420,
+  height: 620,
+  padding: 18,
+  minLon: 122,
+  maxLon: 146,
+  minLat: 24,
+  maxLat: 46,
+} as const
+
+/** WGS84の緯度経度を白地図と同じ正距円筒図法のSVG座標へ投影する。 */
+export function projectJapanCoordinate(lon: number, lat: number): { x: number; y: number } {
+  const innerWidth = JAPAN_MAP_VIEWBOX.width - JAPAN_MAP_VIEWBOX.padding * 2
+  const innerHeight = JAPAN_MAP_VIEWBOX.height - JAPAN_MAP_VIEWBOX.padding * 2
+  return {
+    x:
+      JAPAN_MAP_VIEWBOX.padding +
+      ((lon - JAPAN_MAP_VIEWBOX.minLon) / (JAPAN_MAP_VIEWBOX.maxLon - JAPAN_MAP_VIEWBOX.minLon)) * innerWidth,
+    y:
+      JAPAN_MAP_VIEWBOX.padding +
+      ((JAPAN_MAP_VIEWBOX.maxLat - lat) / (JAPAN_MAP_VIEWBOX.maxLat - JAPAN_MAP_VIEWBOX.minLat)) * innerHeight,
+  }
+}
+
 function point(
   name: string,
-  x: number,
-  y: number,
-  labelX: number,
-  labelY: number,
+  labelDx: number,
+  labelDy: number,
   labelAnchor: 'start' | 'end' = 'start',
 ): NightMapPoint {
   const city = CITIES.find((candidate) => candidate.name === name)
   if (!city) throw new Error(`Unknown map point: ${name}`)
-  return { ...city, x, y, labelX, labelY, labelAnchor }
+  const { x, y } = projectJapanCoordinate(city.lon, city.lat)
+  return { ...city, x, y, labelX: x + labelDx, labelY: y + labelDy, labelAnchor }
 }
 
-/** 日本を縦断する主要観測点。47都市の正本から座標を参照する。 */
+/** 日本を縦断する主要観測点。地図上の位置は各都市の実緯度経度から算出する。 */
 export const NIGHT_MAP_POINTS: NightMapPoint[] = [
-  point('札幌', 315, 64, 337, 61),
-  point('仙台', 300, 203, 323, 202),
-  point('新潟', 251, 226, 229, 212, 'end'),
-  point('東京', 299, 291, 323, 293),
-  point('長野', 248, 274, 226, 268, 'end'),
-  point('名古屋', 220, 321, 243, 322),
-  point('大阪', 181, 347, 160, 338, 'end'),
-  point('広島', 119, 371, 96, 360, 'end'),
-  point('高知', 144, 410, 167, 417),
-  point('福岡', 66, 397, 43, 386, 'end'),
-  point('鹿児島', 67, 466, 91, 474),
-  point('那覇', 35, 531, 58, 535),
+  point('札幌', 26, -5),
+  point('仙台', 30, -4),
+  point('新潟', -30, -14, 'end'),
+  point('東京', 32, -8),
+  point('長野', -31, -8, 'end'),
+  point('名古屋', 35, 16),
+  point('大阪', -35, 15, 'end'),
+  point('広島', -33, -17, 'end'),
+  point('高知', 31, 21),
+  point('福岡', -31, -18, 'end'),
+  point('鹿児島', 31, 13),
+  point('那覇', 28, 4),
 ]
 
 export interface NightMapHour {
