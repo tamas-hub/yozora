@@ -16,6 +16,7 @@
 - **ISS通過予報** — 今後3日の可視パス（出現方角→最大高度→消える方角）
 - **流星群** — 主要10流星群のカレンダーと今夜のアクティブ判定
 - **3つの表示モード** — 夜（観測報・ゴールド）/ 昼（紙にインク）/ 極光（オーロラ空＋ガラスパネル）
+- **ホーム画面アプリ** — iPhone / Android / PCへ追加でき、取得済みの画面と予報はオフラインでも再表示
 
 ## デザイン — 夜間観測報 / Night Sky Bulletin
 
@@ -32,13 +33,14 @@
 - 天気: [Open-Meteo](https://open-meteo.com/)（APIキー不要・CORS可）
 - TLE: [WhereTheISS.at](https://wheretheiss.at/)（フォールバック: Celestrak）
 - 地図: [Natural Earth](https://www.naturalearthdata.com/) 1:50m（パブリックドメイン、Japan geometryを静的SVG化）
+- PWA: Web App Manifest + Service Worker（ホーム画面追加、アプリ風起動、画面資産・取得済み予報のオフラインキャッシュ）
 
 ## 開発
 
 ```bash
 npm install
 npm run dev    # 開発サーバ
-npm test       # vitest（計算コア37件）
+npm test       # vitest
 npm run build  # 本番ビルド（dist/）
 ```
 

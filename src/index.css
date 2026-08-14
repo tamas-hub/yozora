@@ -68,7 +68,11 @@ body {
 #root {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 24px 20px 48px;
+  padding:
+    max(24px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    max(48px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
 }
 
 button {
@@ -184,6 +188,82 @@ button {
   gap: 12px;
   flex-wrap: wrap;
   margin: 14px 0 12px;
+}
+.install-button {
+  background: transparent;
+  border-radius: 0;
+  cursor: pointer;
+  font: inherit;
+}
+.install-guide-backdrop {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
+  z-index: 100;
+}
+.install-guide {
+  background: var(--ground);
+  border: 1px solid var(--rule-strong);
+  color: var(--ink);
+  max-width: 430px;
+  padding: 26px;
+  width: 100%;
+}
+.install-guide-kicker {
+  color: var(--accent-text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  margin: 0 0 10px;
+}
+.install-guide h2 {
+  font-family: var(--font-display);
+  font-size: 25px;
+  margin: 0 0 18px;
+}
+.install-guide ol {
+  border-bottom: 1px solid var(--rule);
+  border-top: 1px solid var(--rule);
+  margin: 0;
+  padding: 16px 0 16px 2.2em;
+}
+.install-guide li + li {
+  margin-top: 9px;
+}
+.install-guide > p:not(.install-guide-kicker) {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 15px 0;
+}
+.install-guide-close {
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  color: var(--ground);
+  cursor: pointer;
+  font: inherit;
+  min-height: 44px;
+  padding: 9px 22px;
+  width: 100%;
+}
+.offline-notice {
+  align-items: center;
+  border: 1px solid var(--rule-strong);
+  color: var(--ink-2);
+  display: flex;
+  font-size: 12px;
+  gap: 9px;
+  line-height: 1.5;
+  margin: 12px 0 0;
+  padding: 8px 11px;
+}
+.offline-notice span {
+  color: var(--accent-text);
+  font-size: 8px;
 }
 
 /* 操作要素 */
