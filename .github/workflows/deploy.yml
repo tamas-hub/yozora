@@ -17,6 +17,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Tokyo # テストはローカル時刻の天文値を検証するためJST固定
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
