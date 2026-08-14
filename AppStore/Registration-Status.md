@@ -8,7 +8,7 @@
 - Apple ID: 6801428026
 - Bundle ID: jp.tama.yozora
 - SKU: YOZORA-IOS-2026
-- バージョン / ビルド: 1.0 / 3
+- バージョン / ビルド: 1.0 / 4
 - 現在の状態: 提出準備中
 - 価格: 無料
 - 配信地域: 175地域
@@ -28,22 +28,24 @@
 
 ## 検証済み
 
-- Web単体テスト: 53件成功
+- Web単体テスト: 54件成功
 - lint: 成功
 - 本番Webビルド: 成功
 - 昼・夜・極光テーマの主要レイアウト寸法一致を確認
+- モバイルのカード外側余白を20px、カード内側余白を12pxに調整し、横方向のはみ出しがないことを確認
 - iOS最上部の二重マスクを撤去し、safe area基準の余白へ統一
 - モバイル上部ツールバーを一段のコンパクト表示へ修正
+- 全国地図のOsakaラベルをHiroshimaのマーカーと重ならない右下へ移動し、日本語・英語表示で確認
 - iOSシミュレータでビルド、インストール、起動、画面取得
-- 実機「TAMA」（iPhone 16 Pro / iOS 26.6）向けBuild 3 Debugビルド: 成功
-- Build 3の実機インストールと `jp.tama.yozora` の起動: 成功（起動プロセス確認済み）
-- Build 3のRelease archive: 成功
+- 実機「TAMA」（iPhone 16 Pro / iOS 26.6）向けBuild 4 Debugビルド: 成功
+- Build 4の実機インストールと `jp.tama.yozora` の起動: 成功（起動プロセス確認済み）
+- Build 4のRelease archive: 成功
 - Privacy Manifestと暗号化申告キーをアーカイブ内で確認
 - 配布用IPAのApple事前検証: エラー0件
-- Build 3アップロード: 成功（Delivery UUID: 353e45c5-2d63-49e8-88bf-d6f630bd3774）
-- Apple側のBuild 3処理: VALID / APP_STORE_ELIGIBLE
-- バージョン1.0にBuild 3を選択済み
-- 上部描画修正版の6.9インチ用スクリーンショット5枚を再作成・差し替え済み
+- Build 4アップロード: 成功（Delivery UUID: c75e0849-a83e-4449-9891-ad926b256251）
+- Apple側のBuild 4処理: VALID / APP_STORE_ELIGIBLE
+- バージョン1.0にBuild 4を選択済み
+- 上部描画・カード余白・Osakaラベル修正版の6.9インチ用スクリーンショット5枚を再作成・差し替え済み
 - スクリーンショット順序: ホーム、時間別、惑星、全国地図、観測一覧
 - 新しい実写スノードームアイコンがBuild情報に反映済み
 - 無料価格（各地域0.00）と175地域の配信可能状態を画面で再確認

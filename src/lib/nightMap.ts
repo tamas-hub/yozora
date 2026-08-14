@@ -55,7 +55,8 @@ export const NIGHT_MAP_POINTS: NightMapPoint[] = [
   point('東京', 32, -8),
   point('長野', -31, -8, 'end'),
   point('名古屋', 35, 16),
-  point('大阪', -35, 15, 'end'),
+  // 関西の密集域では左側が広島のマーカーと重なるため、右下へ引き出す。
+  point('大阪', 41, 33),
   point('広島', -33, -17, 'end'),
   point('高知', 31, 21),
   point('福岡', -31, -18, 'end'),

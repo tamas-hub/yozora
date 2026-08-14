@@ -47,4 +47,14 @@ describe('projectJapanCoordinate', () => {
       expect(point.y).toBeLessThan(JAPAN_MAP_VIEWBOX.height)
     }
   })
+
+  it('大阪ラベルを広島のマーカーと重ならない右下へ配置する', () => {
+    const osaka = NIGHT_MAP_POINTS.find((point) => point.name === '大阪')!
+    const hiroshima = NIGHT_MAP_POINTS.find((point) => point.name === '広島')!
+
+    expect(osaka.labelAnchor).toBe('start')
+    expect(osaka.labelX).toBeGreaterThan(osaka.x)
+    expect(osaka.labelY).toBeGreaterThan(osaka.y)
+    expect(Math.hypot(osaka.labelX - hiroshima.x, osaka.labelY - hiroshima.y)).toBeGreaterThan(70)
+  })
 })

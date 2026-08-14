@@ -974,9 +974,18 @@ select.city-select option {
   #root {
     padding:
       max(16px, calc(env(safe-area-inset-top, 0px) + 12px))
-      max(16px, env(safe-area-inset-right))
+      max(20px, calc(env(safe-area-inset-right, 0px) + 8px))
       max(40px, env(safe-area-inset-bottom))
-      max(16px, env(safe-area-inset-left));
+      max(20px, calc(env(safe-area-inset-left, 0px) + 8px));
+  }
+  .masthead,
+  .section,
+  .footer {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .masthead {
+    padding-bottom: 12px;
   }
   .native-toolbar {
     align-items: center;
@@ -991,7 +1000,11 @@ select.city-select option {
     grid-template-columns: 1fr;
     margin-top: 40px;
     padding-top: 12px;
+    padding-bottom: 16px;
     row-gap: 12px;
+  }
+  .footer {
+    padding-bottom: 12px;
   }
   .section-side {
     flex-direction: row;
