@@ -22,6 +22,7 @@ import { IssCard } from './components/IssCard'
 import { MeteorCard } from './components/MeteorCard'
 import { Masthead } from './components/Masthead'
 import { JapanMapPage } from './components/JapanMapPage'
+import { NetworkStatus } from './components/NetworkStatus'
 
 const STORAGE_KEY = 'yozora.location'
 const THEME_KEY = 'yozora.theme'
@@ -88,6 +89,12 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
+    const themeColors: Record<ThemeMode, string> = {
+      night: '#101014',
+      day: '#f4f1e8',
+      aurora: '#0a0f26',
+    }
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', themeColors[theme])
     try {
       localStorage.setItem(THEME_KEY, theme)
     } catch {
@@ -204,6 +211,7 @@ export default function App() {
           onLangChange={setLang}
           onThemeChange={setTheme}
         />
+        <NetworkStatus lang={lang} />
         <JapanMapPage
           lang={lang}
           now={now}
@@ -229,6 +237,7 @@ export default function App() {
         onLangChange={setLang}
         onThemeChange={setTheme}
       />
+      <NetworkStatus lang={lang} />
 
       <main>
         <ScoreCard

@@ -31,6 +31,20 @@ const DICT = {
   'theme.aurora': { ja: '極光', en: 'AURORA' },
   'nav.map': { ja: '地図で見る', en: 'View map' },
   'nav.bulletin': { ja: '地点別に見る', en: 'View one location' },
+  'pwa.install': { ja: 'アプリとして使う', en: 'Install app' },
+  'pwa.iosTitle': { ja: 'ホーム画面に追加', en: 'Add to Home Screen' },
+  'pwa.iosStep1': { ja: 'ブラウザの共有ボタンを選びます', en: 'Tap the Share button in your browser' },
+  'pwa.iosStep2': { ja: '「ホーム画面に追加」を選びます', en: 'Choose “Add to Home Screen”' },
+  'pwa.iosStep3': { ja: '右上の「追加」で完了です', en: 'Tap “Add” to finish' },
+  'pwa.iosNote': {
+    ja: '次からはYOZORAのアイコンを選ぶだけで、アプリのように開けます。',
+    en: 'After that, open YOZORA from its icon just like an app.',
+  },
+  'pwa.close': { ja: '閉じる', en: 'Close' },
+  'pwa.offline': {
+    ja: 'オフラインです。保存済みの画面と取得済みデータを表示します。',
+    en: 'Offline — showing the saved app and previously fetched data.',
+  },
   'map.eyebrow': { ja: '列島観測網 / 主要12地点', en: 'NATIONAL OBSERVATION GRID / 12 STATIONS' },
   'map.title': { ja: '今夜の夜空日和を、一望。', en: 'Tonight across Japan, at a glance.' },
   'map.intro': {

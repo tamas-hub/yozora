@@ -3,6 +3,7 @@ import { t, type Lang } from '../lib/i18n'
 import type { City } from '../lib/geo'
 import type { ThemeMode } from '../App'
 import { LocationPicker } from './LocationPicker'
+import { InstallApp } from './InstallApp'
 
 const THEMES: ThemeMode[] = ['night', 'day', 'aurora']
 
@@ -53,6 +54,7 @@ export function Masthead({
           <MapIcon />
           {t(lang, page === 'map' ? 'nav.bulletin' : 'nav.map')}
         </a>
+        <InstallApp lang={lang} />
         <div className="lang-toggle theme-toggle" role="group" aria-label={t(lang, 'theme.groupAria')}>
           {THEMES.map((mode, index) => (
             <span key={mode} className="theme-toggle-item">
