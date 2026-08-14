@@ -974,15 +974,15 @@ select.city-select option {
   #root {
     padding:
       max(16px, calc(env(safe-area-inset-top, 0px) + 12px))
-      max(20px, calc(env(safe-area-inset-right, 0px) + 8px))
+      max(12px, calc(env(safe-area-inset-right, 0px) + 8px))
       max(40px, env(safe-area-inset-bottom))
-      max(20px, calc(env(safe-area-inset-left, 0px) + 8px));
+      max(12px, calc(env(safe-area-inset-left, 0px) + 8px));
   }
   .masthead,
   .section,
   .footer {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 18px;
+    padding-right: 18px;
   }
   .masthead {
     padding-bottom: 12px;
@@ -1029,24 +1029,183 @@ select.city-select option {
     gap: 8px;
   }
   .masthead-controls {
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    justify-content: stretch;
+  }
+  .location-picker {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+  .select-wrap,
+  .city-select,
+  .geo-button,
+  .page-link,
+  .install-button {
+    width: 100%;
+  }
+  .page-link,
+  .install-button {
+    justify-content: center;
   }
   .chart-bars,
   .chart-hours {
     gap: 3px;
   }
   .planet-row {
-    grid-template-columns: 16px minmax(4em, auto) 1fr auto;
+    grid-template-areas:
+      'marker name time'
+      '. direction altitude';
+    grid-template-columns: 14px minmax(0, 1fr) auto;
+    column-gap: 10px;
+    row-gap: 3px;
+    padding: 14px 0;
+  }
+  .planet-marker {
+    grid-area: marker;
+  }
+  .planet-name {
+    grid-area: name;
+  }
+  .planet-time {
+    grid-area: time;
+  }
+  .planet-dir {
+    grid-area: direction;
+    min-width: 0;
+    white-space: normal;
+  }
+  .planet-alt {
+    grid-area: altitude;
   }
   .planet-mag {
     display: none;
   }
   .iss-row {
-    grid-template-columns: 28px auto 1fr;
-    row-gap: 4px;
+    grid-template-columns: 28px minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 2px;
+    padding: 14px 0;
+  }
+  .iss-minimap {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    align-self: start;
+    margin-top: 2px;
+  }
+  .iss-date,
+  .iss-time {
+    grid-column: 2;
   }
   .iss-path {
-    grid-column: 2 / -1;
+    grid-column: 2;
+    line-height: 1.65;
+  }
+  .moon-info {
+    min-width: 0;
+  }
+  .score-verdict {
+    font-size: clamp(23px, 7.2vw, 28px);
+  }
+  .score-advice,
+  .meteor-detail {
+    line-height: 1.75;
+  }
+}
+
+/* 画面拡大時や小型端末でも、固定列を作らず内容を縦へ逃がす。 */
+@media (max-width: 359px) {
+  #root {
+    padding-right: max(10px, calc(env(safe-area-inset-right, 0px) + 6px));
+    padding-left: max(10px, calc(env(safe-area-inset-left, 0px) + 6px));
+  }
+  .masthead,
+  .section,
+  .footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .masthead-date {
+    font-size: clamp(24px, 12vw, 32px);
+  }
+  .brand-name {
+    font-size: 19px;
+    letter-spacing: 0.1em;
+  }
+  .masthead-controls,
+  .location-picker {
+    grid-template-columns: 1fr;
+  }
+  .score-number {
+    font-size: clamp(64px, 34vw, 88px);
+  }
+  .score-max {
+    font-size: 14px;
+  }
+  .score-figure {
+    gap: 4px;
+  }
+  .leader-row {
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .leader-label {
+    min-width: 0;
+    white-space: normal;
+  }
+  .leader-dots {
+    display: none;
+  }
+  .chart-well {
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+  .chart-frame {
+    grid-template-columns: 22px minmax(0, 1fr);
+    column-gap: 4px;
+  }
+  .chart-bars,
+  .chart-hours {
+    gap: 2px;
+  }
+  .bar-col,
+  .hour-label {
+    min-width: 4px;
+  }
+  .meteor-row {
+    grid-template-columns: 1fr;
+    row-gap: 5px;
+  }
+  .meteor-d {
+    font-size: 16px;
+    letter-spacing: 0.06em;
+  }
+  .moon-layout {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .moon-info,
+  .moon-leaders {
+    width: 100%;
+  }
+  .footer-colophon {
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+  .map-detail-heading {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .map-timeline {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .map-legend {
+    flex-wrap: wrap;
+    gap: 8px 12px;
   }
 }
 

@@ -36,16 +36,16 @@ export function PlanetsCard({ lang, planets }: Props) {
             <span className="planet-name">{t(lang, `planet.${p.key}`)}</span>
             {p.visible ? (
               <>
-                <span className="planet-cell">{fmtTime(p.bestTime)}</span>
+                <span className="planet-cell planet-time">{fmtTime(p.bestTime)}</span>
                 <span className="planet-dir">{azimuthToCompass(p.bestAzimuth, lang)}</span>
-                <span className="planet-cell">{Math.round(p.bestAltitude)}°</span>
+                <span className="planet-cell planet-alt">{Math.round(p.bestAltitude)}°</span>
                 <span className="planet-cell planet-mag">{t(lang, 'planets.mag', { m: p.magnitude.toFixed(1) })}</span>
               </>
             ) : (
               <>
-                <span className="planet-cell">—</span>
+                <span className="planet-cell planet-time">—</span>
                 <span className="planet-dir">{t(lang, 'planets.notVisible')}</span>
-                <span className="planet-cell">—</span>
+                <span className="planet-cell planet-alt">—</span>
                 <span className="planet-cell planet-mag">—</span>
               </>
             )}
