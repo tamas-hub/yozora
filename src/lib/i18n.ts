@@ -23,16 +23,14 @@ export function saveLang(lang: Lang): void {
 type Entry = { ja: string; en: string }
 
 const DICT = {
-  tagline: { ja: '今夜、星は見える？', en: 'Will the stars be out tonight?' },
-  'score.title': { ja: '{date} の星空指数', en: 'Stargazing index · {date}' },
-  'score.unit': { ja: '点', en: '/100' },
+  tagline: { ja: 'ヨゾラ — 今夜、星は見える？', en: 'Will the stars be out tonight?' },
+  'lang.groupAria': { ja: '言語', en: 'Language' },
   'score.loading': { ja: '観測待機中 — 天気を確認しています', en: 'STANDBY — checking the weather' },
   'score.error': {
     ja: '天気データを取得できませんでした。通信環境を確認して再読み込みしてください。',
     en: "Couldn't load weather data. Check your connection and reload.",
   },
   'score.best': { ja: 'ベスト時間帯', en: 'Best window' },
-  'score.bestValue': { ja: '{time}頃', en: 'around {time}' },
   'score.sunset': { ja: '日の入', en: 'Sunset' },
   'score.sunrise': { ja: '日の出', en: 'Sunrise' },
   'verdict.4': { ja: '絶好の星空日和', en: 'A perfect night for stars' },
@@ -45,7 +43,6 @@ const DICT = {
   'advice.2': { ja: '雲の切れ間や月明かり次第。粘れば見えます', en: 'Depends on cloud breaks and moonlight — patience pays' },
   'advice.1': { ja: '今夜は条件がよくありません。明日に期待', en: 'Conditions are rough tonight. Try tomorrow' },
   'advice.0': { ja: '空を見るより布団の中がおすすめです', en: 'Better off under a blanket than under the sky' },
-  'hourly.title': { ja: '時間別スコア（バーが高いほど好条件）', en: 'Hourly score (taller bar = better)' },
   'hourly.waiting': { ja: 'データ待ち…', en: 'Waiting for data…' },
   'hourly.aria': { ja: '18時から翌5時までの時間別星空スコア', en: 'Hourly stargazing score, 18:00 to 5:00' },
   'hourly.note': { ja: '斜線のバーは薄明（空がまだ明るい時間）。バーをタップで数値表示', en: 'Hatched bars: twilight, sky still bright. Tap a bar for its value' },
@@ -53,7 +50,6 @@ const DICT = {
   'hourly.tip': { ja: '{h}時 スコア{s}点・雲量{c}%', en: '{h}:00 — score {s}, clouds {c}%' },
   'hourly.tipNoData': { ja: '{h}時 データなし', en: '{h}:00 — no data' },
   'hourly.stillBright': { ja: '（まだ明るい）', en: ' (still bright)' },
-  'moon.title': { ja: '今夜の月', en: "Tonight's moon" },
   'moon.age': { ja: '月齢', en: 'Moon age' },
   'moon.illum': { ja: '輝面比', en: 'Illuminated' },
   'moon.rise': { ja: '月の出', en: 'Moonrise' },
@@ -72,7 +68,6 @@ const DICT = {
   },
   'moon.impact.some': { ja: '月明かりの影響はそこそこ。月没後が狙い目です', en: 'Some moonlight — aim for after moonset' },
   'moon.impact.none': { ja: '月明かりはほぼ気になりません', en: 'Moonlight is barely a factor' },
-  'planets.title': { ja: '今夜の惑星', en: 'Planets tonight' },
   'planets.count': { ja: '可視 {n} / 5', en: 'VISIBLE {n} / 5' },
   'planets.notVisible': { ja: '今夜は見えません', en: 'Not visible tonight' },
   'planets.detail': { ja: '{time}頃 {dir}の空・高度{alt}°', en: 'around {time} · {dir} sky · alt {alt}°' },
@@ -82,7 +77,6 @@ const DICT = {
   'planet.mars': { ja: '火星', en: 'Mars' },
   'planet.jupiter': { ja: '木星', en: 'Jupiter' },
   'planet.saturn': { ja: '土星', en: 'Saturn' },
-  'iss.title': { ja: 'ISS（国際宇宙ステーション）通過予報 — 今後3日', en: 'ISS passes — next 3 days' },
   'iss.loading': { ja: '軌道データ取得中…', en: 'Fetching orbital data…' },
   'iss.error': { ja: '軌道データを取得できませんでした', en: "Couldn't load orbital data" },
   'iss.none': {
@@ -97,7 +91,6 @@ const DICT = {
     ja: '飛行機より速い明るい光点がスーッと横切ります。肉眼でOK',
     en: 'A bright point gliding faster than a plane — naked eye is enough',
   },
-  'meteors.title': { ja: '流星群', en: 'Meteor showers' },
   'meteors.peak': { ja: '極大', en: 'Peak' },
   'meteors.tonightPeak': { ja: '今夜が極大！', en: 'Peaks tonight!' },
   'meteors.daysUntil': { ja: '極大まであと{d}日', en: '{d} days to peak' },
@@ -114,7 +107,7 @@ const DICT = {
   },
   'footer.credits': {
     ja: '計算: astronomy-engine / satellite.js ・ 天気: Open-Meteo ・ TLE: WhereTheISS.at',
-    en: 'Astronomy: astronomy-engine / satellite.js · Weather: Open-Meteo · TLE: WhereTheISS.at',
+    en: 'CALC ASTRONOMY-ENGINE / SATELLITE.JS · WX OPEN-METEO · TLE WHERETHEISS.AT',
   },
   'footer.disclaimer': {
     ja: '予報は目安です。標高・光害・地形により実際の見え方は変わります。',

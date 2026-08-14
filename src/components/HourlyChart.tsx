@@ -33,7 +33,7 @@ export function HourlyChart({ lang, hours, bestTime }: Props) {
       {!hasData ? (
         <div className="status-line">{t(lang, 'hourly.waiting')}</div>
       ) : (
-        <div className="chart-well" role="img" aria-label={t(lang, 'hourly.aria')}>
+        <div className="chart-well" role="group" aria-label={t(lang, 'hourly.aria')}>
           <div className="chart-frame">
             <div className="chart-axis" aria-hidden="true">
               <span className="axis-label" style={{ top: '0%' }}>100</span>

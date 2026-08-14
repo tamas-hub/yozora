@@ -64,9 +64,17 @@ export default function App() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(location))
     setWeather(null)
     setWeatherError(false)
+    let stale = false // 都市連続切替時に旧レスポンスの後着上書きを防ぐ
     fetchWeather(lat, lon)
-      .then(setWeather)
-      .catch(() => setWeatherError(true))
+      .then((w) => {
+        if (!stale) setWeather(w)
+      })
+      .catch(() => {
+        if (!stale) setWeatherError(true)
+      })
+    return () => {
+      stale = true
+    }
   }, [location, lat, lon])
 
   useEffect(() => {
@@ -138,15 +146,13 @@ export default function App() {
         <div className="masthead-top">
           <div className="brand">
             <h1 className="brand-name">YOZORA</h1>
-            <p className="brand-tag">
-              {lang === 'ja' ? 'ヨゾラ — 今夜、星は見える？' : t(lang, 'tagline')}
-            </p>
+            <p className="brand-tag">{t(lang, 'tagline')}</p>
           </div>
           <div className="masthead-date">{fmtBulletinDate(hours[0])}</div>
         </div>
         <div className="masthead-controls">
           <LocationPicker lang={lang} location={location} onChange={setLocation} />
-          <div className="lang-toggle" role="group" aria-label="Language">
+          <div className="lang-toggle" role="group" aria-label={t(lang, 'lang.groupAria')}>
             <button
               className={`lang-button ${lang === 'ja' ? 'lang-active' : ''}`}
               onClick={() => setLang('ja')}
@@ -189,9 +195,7 @@ export default function App() {
 
       <footer className="footer">
         <div>
-          <p className="footer-sources">
-            CALC ASTRONOMY-ENGINE / SATELLITE.JS · WX OPEN-METEO · TLE WHERETHEISS.AT
-          </p>
+          <p className="footer-sources">{t(lang, 'footer.credits')}</p>
           <p className="footer-disclaimer">{t(lang, 'footer.disclaimer')}</p>
         </div>
         <span className="footer-colophon">YOZORA — NIGHT SKY BULLETIN</span>

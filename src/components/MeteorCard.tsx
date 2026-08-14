@@ -60,10 +60,14 @@ export function MeteorCard({ lang, showers, upcoming }: Props) {
         <div className="meteor-detail">
           {t(lang, 'meteors.none', {
             name: showerName(upcoming.shower, lang),
-            date: fmtDateShort(
-              new Date(new Date().getFullYear(), upcoming.shower.peak[0] - 1, upcoming.shower.peak[1]),
-              lang,
-            ),
+            // daysToPeakから再構成することで年またぎ(12/27→翌年1/4)でも曜日が正しい
+            date: (() => {
+              const now = new Date()
+              return fmtDateShort(
+                new Date(now.getFullYear(), now.getMonth(), now.getDate() + upcoming.daysToPeak),
+                lang,
+              )
+            })(),
             d: upcoming.daysToPeak,
           })}
         </div>

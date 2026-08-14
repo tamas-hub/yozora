@@ -12,8 +12,8 @@ function PassMiniMap({ pass }: { pass: IssPass }) {
   }
   const [x1, y1] = pt(pass.startAzimuthDeg, 10)
   const [x2, y2] = pt(pass.endAzimuthDeg, 10)
-  // 最大高度が高いほど中心に寄る（90°=天頂で中心）
-  const peakR = 10 * (1 - Math.min(90, pass.maxElevationDeg) / 90)
+  // 円周=仰角10°（可視閾値）、中心=天頂90° に統一（始点/終点も仰角10°で円周上にある）
+  const peakR = 10 * ((90 - Math.min(90, pass.maxElevationDeg)) / 80)
   const [px, py] = pt(pass.peakAzimuthDeg, peakR)
   // 2次ベジェの制御点: 経路が頂点を通るよう頂点を外挿
   const cx = 2 * px - (x1 + x2) / 2

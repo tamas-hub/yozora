@@ -82,15 +82,18 @@ export function moonInfo(date: Date, lat: number, lon: number): MoonInfo {
   const time = MakeTime(date)
   const phaseAngle = MoonPhase(time)
   const illumination = Illumination(Body.Moon, time).phase_fraction
-  const searchStart = new Date(date)
-  searchStart.setHours(12, 0, 0, 0)
+  // 出は当日0時起点（正午前に昇る月齢帯で翌日の時刻を出さない）、入は正午起点（今夜の月没）
+  const riseStart = new Date(date)
+  riseStart.setHours(0, 0, 0, 0)
+  const setStart = new Date(date)
+  setStart.setHours(12, 0, 0, 0)
   return {
     age: (phaseAngle / 360) * 29.530588,
     illumination,
     phaseKey: moonPhaseKey(phaseAngle),
     phaseAngle,
-    rise: searchRiseSet(Body.Moon, searchStart, lat, lon, 1),
-    set: searchRiseSet(Body.Moon, searchStart, lat, lon, -1),
+    rise: searchRiseSet(Body.Moon, riseStart, lat, lon, 1),
+    set: searchRiseSet(Body.Moon, setStart, lat, lon, -1),
   }
 }
 

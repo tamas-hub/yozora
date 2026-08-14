@@ -5,8 +5,8 @@ import { fmtDateShort } from '../format'
 
 describe('t', () => {
   it('言語別の文字列を返す', () => {
-    expect(t('ja', 'moon.title')).toBe('今夜の月')
-    expect(t('en', 'moon.title')).toBe("Tonight's moon")
+    expect(t('ja', 'moon.age')).toBe('月齢')
+    expect(t('en', 'moon.age')).toBe('Moon age')
   })
 
   it('{key}補間が全出現に効く', () => {
