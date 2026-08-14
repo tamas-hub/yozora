@@ -37,6 +37,8 @@
   --bar-1: #4e4b44; /* 0-19 +ハッチ */
 
   --badge-ink: #101014; /* 極大バッジの文字色（アクセント地の上） */
+  --map-land: #e8e4db;
+  --map-coast: #f2efe6;
 
   --font-display: 'Archivo Variable', 'Archivo', sans-serif;
   --font-mono: 'IBM Plex Mono', 'Consolas', monospace;
@@ -871,6 +873,8 @@ select.city-select option {
   --bar-2: #aba89c;
   --bar-1: #d5d1c4;
   --badge-ink: #ffffff;
+  --map-land: #ffffff;
+  --map-coast: #46464c;
 }
 
 /* ---- 極光: オーロラ空＋ガラスパネル ---- */
@@ -897,6 +901,8 @@ select.city-select option {
   --bar-2: #6a7390;
   --bar-1: #4a5170;
   --badge-ink: #0a0f26;
+  --map-land: rgba(242, 245, 255, 0.16);
+  --map-coast: rgba(242, 245, 255, 0.72);
 }
 
 :root[data-theme='aurora'] body {
@@ -1031,19 +1037,14 @@ select.city-select option {
 .japan-map {
   display: block;
   width: 100%;
-  max-height: 590px;
+  max-width: 420px;
+  height: auto;
+  margin: 0 auto;
 }
 .japan-outline path {
-  fill: var(--ground);
-  stroke: var(--rule-strong);
-  stroke-width: 1.2;
-  vector-effect: non-scaling-stroke;
-}
-.map-grid path {
-  fill: none;
-  stroke: var(--rule);
-  stroke-width: 0.7;
-  stroke-dasharray: 2 8;
+  fill: var(--map-land);
+  stroke: var(--map-coast);
+  stroke-width: 0.8;
   vector-effect: non-scaling-stroke;
 }
 .map-station {
@@ -1052,8 +1053,12 @@ select.city-select option {
 }
 .map-station line {
   stroke: currentColor;
-  stroke-width: 0.8;
+  stroke-width: 1;
   vector-effect: non-scaling-stroke;
+}
+.map-station .map-station-line-halo {
+  stroke: var(--ground);
+  stroke-width: 3;
 }
 .map-station-hit {
   fill: transparent;
@@ -1067,12 +1072,15 @@ select.city-select option {
 .map-station-score {
   fill: currentColor;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   pointer-events: none;
 }
 .map-station-name {
   fill: var(--ink-2);
+  stroke: var(--ground);
+  stroke-width: 3px;
+  paint-order: stroke fill;
   font-family: var(--font-ja);
   font-size: 11px;
   font-weight: 600;
@@ -1113,6 +1121,14 @@ select.city-select option {
 .legend-high { background: var(--rank-4); }
 .legend-mid { background: var(--ink-2); }
 .legend-low { background-color: var(--ground); }
+.map-source {
+  margin: 7px 0 0;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
 
 .map-detail {
   min-width: 0;

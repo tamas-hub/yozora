@@ -142,8 +142,8 @@ const DICT = {
     en: 'No major shower is active now. Next up: {name} — peaks {date}, in {d} days',
   },
   'footer.credits': {
-    ja: '計算: astronomy-engine / satellite.js ・ 天気: Open-Meteo ・ TLE: WhereTheISS.at',
-    en: 'CALC ASTRONOMY-ENGINE / SATELLITE.JS · WX OPEN-METEO · TLE WHERETHEISS.AT',
+    ja: '計算: astronomy-engine / satellite.js ・ 天気: Open-Meteo ・ TLE: WhereTheISS.at ・ 地図: Natural Earth',
+    en: 'CALC ASTRONOMY-ENGINE / SATELLITE.JS · WX OPEN-METEO · TLE WHERETHEISS.AT · MAP NATURAL EARTH',
   },
   'footer.disclaimer': {
     ja: '予報は目安です。標高・光害・地形により実際の見え方は変わります。',

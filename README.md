@@ -31,6 +31,7 @@
 - 軌道計算: [satellite.js](https://github.com/shashwatak/satellite-js) v5（SGP4伝播＋地球影の円筒モデルで可視判定）
 - 天気: [Open-Meteo](https://open-meteo.com/)（APIキー不要・CORS可）
 - TLE: [WhereTheISS.at](https://wheretheiss.at/)（フォールバック: Celestrak）
+- 地図: [Natural Earth](https://www.naturalearthdata.com/) 1:50m（パブリックドメイン、Japan geometryを静的SVG化）
 
 ## 開発
 
