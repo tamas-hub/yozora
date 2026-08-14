@@ -13,21 +13,25 @@ import { fetchWeather, weatherAt, type HourWeather } from './lib/weather'
 import { fetchIssTle, findVisiblePasses, type TLE } from './lib/iss'
 import { activeShowers, nextPeak } from './lib/meteors'
 import { CITIES, type City } from './lib/geo'
-import { fmtBulletinDate } from './lib/format'
 import { detectLang, saveLang, t, type Lang } from './lib/i18n'
-import { LocationPicker } from './components/LocationPicker'
 import { ScoreCard } from './components/ScoreCard'
 import { HourlyChart, type HourScore } from './components/HourlyChart'
 import { MoonCard } from './components/MoonCard'
 import { PlanetsCard } from './components/PlanetsCard'
 import { IssCard } from './components/IssCard'
 import { MeteorCard } from './components/MeteorCard'
+import { Masthead } from './components/Masthead'
+import { JapanMapPage } from './components/JapanMapPage'
 
 const STORAGE_KEY = 'yozora.location'
 const THEME_KEY = 'yozora.theme'
 
 export type ThemeMode = 'night' | 'day' | 'aurora'
-const THEMES: ThemeMode[] = ['night', 'day', 'aurora']
+type Page = 'bulletin' | 'map'
+
+function pageFromHash(): Page {
+  return window.location.hash === '#/map' ? 'map' : 'bulletin'
+}
 
 function detectTheme(): ThemeMode {
   try {
@@ -60,6 +64,7 @@ export default function App() {
   const [lang, setLang] = useState<Lang>(detectLang)
   const [theme, setTheme] = useState<ThemeMode>(detectTheme)
   const [location, setLocation] = useState<City>(loadLocation)
+  const [page, setPage] = useState<Page>(pageFromHash)
   const [weather, setWeather] = useState<HourWeather[] | null>(null)
   const [weatherError, setWeatherError] = useState(false)
   const [tle, setTle] = useState<TLE | null>(null)
@@ -70,10 +75,16 @@ export default function App() {
   const { lat, lon } = location
 
   useEffect(() => {
+    const handleHashChange = () => setPage(pageFromHash())
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  useEffect(() => {
     saveLang(lang)
     document.documentElement.lang = lang
-    document.title = t(lang, 'app.title')
-  }, [lang])
+    document.title = t(lang, page === 'map' ? 'app.mapTitle' : 'app.title')
+  }, [lang, page])
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -90,6 +101,7 @@ export default function App() {
     } catch {
       /* プライベートモード等でstorage不可でも動作継続 */
     }
+    if (page === 'map') return
     setWeather(null)
     setWeatherError(false)
     let stale = false // 都市連続切替時に旧レスポンスの後着上書きを防ぐ
@@ -103,13 +115,14 @@ export default function App() {
     return () => {
       stale = true
     }
-  }, [location, lat, lon])
+  }, [location, lat, lon, page])
 
   useEffect(() => {
+    if (page === 'map') return
     fetchIssTle()
       .then(setTle)
       .catch(() => setTleError(true))
-  }, [])
+  }, [page])
 
   // 太陽: 日の入り（当日15時から探索）・日の出（翌0時から探索)
   const sun = useMemo(() => {
@@ -168,58 +181,54 @@ export default function App() {
   const showers = useMemo(() => activeShowers(hours[0]), [hours])
   const upcoming = useMemo(() => nextPeak(hours[0]), [hours])
 
+  const footer = (
+    <footer className="footer">
+      <div>
+        <p className="footer-sources">{t(lang, 'footer.credits')}</p>
+        <p className="footer-disclaimer">{t(lang, 'footer.disclaimer')}</p>
+      </div>
+      <span className="footer-colophon">YOZORA — NIGHT SKY BULLETIN</span>
+    </footer>
+  )
+
+  if (page === 'map') {
+    return (
+      <div className="app map-app">
+        <Masthead
+          date={hours[0]}
+          lang={lang}
+          theme={theme}
+          page="map"
+          location={location}
+          onLocationChange={setLocation}
+          onLangChange={setLang}
+          onThemeChange={setTheme}
+        />
+        <JapanMapPage
+          lang={lang}
+          now={now}
+          onOpenCity={(city) => {
+            setLocation(city)
+            window.location.hash = '#/'
+          }}
+        />
+        {footer}
+      </div>
+    )
+  }
+
   return (
     <div className="app" data-night={overallVerdict?.rank === 4 ? 'red' : undefined}>
-      <header className="masthead">
-        <div className="masthead-top">
-          <div className="brand">
-            <h1 className="brand-name">YOZORA</h1>
-            <p className="brand-tag">{t(lang, 'tagline')}</p>
-          </div>
-          <div className="masthead-date">{fmtBulletinDate(hours[0])}</div>
-        </div>
-        <div className="masthead-controls">
-          <LocationPicker lang={lang} location={location} onChange={setLocation} />
-          <div className="lang-toggle theme-toggle" role="group" aria-label={t(lang, 'theme.groupAria')}>
-            {THEMES.map((m, i) => (
-              <span key={m} className="theme-toggle-item">
-                {i > 0 && (
-                  <span className="lang-sep" aria-hidden="true">
-                    /
-                  </span>
-                )}
-                <button
-                  className={`lang-button ${theme === m ? 'lang-active' : ''}`}
-                  onClick={() => setTheme(m)}
-                  aria-pressed={theme === m}
-                >
-                  {t(lang, `theme.${m}`)}
-                </button>
-              </span>
-            ))}
-          </div>
-          <div className="lang-toggle" role="group" aria-label={t(lang, 'lang.groupAria')}>
-            <button
-              className={`lang-button ${lang === 'ja' ? 'lang-active' : ''}`}
-              onClick={() => setLang('ja')}
-              aria-pressed={lang === 'ja'}
-            >
-              JA
-            </button>
-            <span className="lang-sep" aria-hidden="true">
-              /
-            </span>
-            <button
-              className={`lang-button ${lang === 'en' ? 'lang-active' : ''}`}
-              onClick={() => setLang('en')}
-              aria-pressed={lang === 'en'}
-            >
-              EN
-            </button>
-          </div>
-        </div>
-        <div className="rule-graduated" aria-hidden="true" />
-      </header>
+      <Masthead
+        date={hours[0]}
+        lang={lang}
+        theme={theme}
+        page="bulletin"
+        location={location}
+        onLocationChange={setLocation}
+        onLangChange={setLang}
+        onThemeChange={setTheme}
+      />
 
       <main>
         <ScoreCard
@@ -239,13 +248,7 @@ export default function App() {
         <IssCard lang={lang} passes={passes} loading={!tle && !tleError} error={tleError} />
       </main>
 
-      <footer className="footer">
-        <div>
-          <p className="footer-sources">{t(lang, 'footer.credits')}</p>
-          <p className="footer-disclaimer">{t(lang, 'footer.disclaimer')}</p>
-        </div>
-        <span className="footer-colophon">YOZORA — NIGHT SKY BULLETIN</span>
-      </footer>
+      {footer}
     </div>
   )
 }
